@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/espwebtool/static/js/main.a648688b.js",
+    "main.js": "/espwebtool/static/js/main.827ddc72.js",
     "index.html": "/espwebtool/index.html",
-    "main.a648688b.js.map": "/espwebtool/static/js/main.a648688b.js.map"
+    "main.827ddc72.js.map": "/espwebtool/static/js/main.827ddc72.js.map"
   },
   "entrypoints": [
-    "static/js/main.a648688b.js"
+    "static/js/main.827ddc72.js"
   ]
 }
