@@ -1,16 +1,27 @@
 import React from 'react'
 
-import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import FileUpload from './FileUpload.js'
 
 const FileUploads = () => {
     return (
-        <Box>
-            <FileUpload />
-            <FileUpload />
-            <FileUpload />
-            <FileUpload />
-        </Box>
+        <Grid container direction='column' justifyContent='flex-start' alignItems='center' spacing={.5}>
+            <Grid item>
+                <FileUpload />
+            </Grid>
+
+            <Grid item>
+                <FileUpload />
+            </Grid>
+
+            <Grid item>
+                <FileUpload />
+            </Grid>
+
+            <Grid item>
+                <FileUpload />
+            </Grid>
+        </Grid>
     )
 }
 

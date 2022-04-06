@@ -1,14 +1,19 @@
 import React from 'react'
 
-import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 
 const Buttons = () => {
     return (
-        <Box>
-            <Button>Erase</Button>
-            <Button>Program</Button>
-        </Box>
+        <Grid container spacing={1} direction='row' justifyContent='space-between' alignItems='flex-start'>
+            <Grid item>
+                <Button variant='contained' color='error'>Erase</Button>
+            </Grid>
+
+            <Grid item>
+                <Button variant='contained' >Program</Button>
+            </Grid>
+        </Grid>
     )
 }
 

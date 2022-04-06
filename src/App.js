@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -11,11 +12,20 @@ function App() {
     <Box>
       <Header />
 
-      <FileUploads/>
-      <Buttons/>
+      <Grid container direction='column' alignItems='center' spacing={1} style={{ marginTop: '.5em', marginBottom:'1em' }}>
+        <Grid item xs={12}>
+          <FileUploads />
+        </Grid>
 
-      <Output />
-      
+        <Grid item xs={12}>
+          <Buttons />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Output />
+        </Grid>
+      </Grid>
+
       <Footer />
     </Box>
   )
