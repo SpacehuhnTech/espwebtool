@@ -12,17 +12,19 @@ function App() {
     <Box>
       <Header />
 
-      <Grid container direction='column' alignItems='center' spacing={1} style={{ marginTop: '.5em', marginBottom:'1em' }}>
+      <Grid container direction='column' alignItems='center' spacing={1} style={{ marginTop: '.5em', marginBottom: '1em' }}>
         <Grid item xs={12}>
           <FileUploads />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={12} sx={{ marginTop: '1em', marginBottom: '1em' }}>
           <Buttons />
         </Grid>
 
         <Grid item xs={12}>
-          <Output />
+          <Output
+            received={''}
+          />
         </Grid>
       </Grid>
 

@@ -7,7 +7,7 @@ const Buttons = () => {
     return (
         <Grid container spacing={1} direction='row' justifyContent='space-between' alignItems='flex-start'>
             <Grid item>
-                <Button variant='contained' color='error'>Erase</Button>
+                <Button color='error'>Erase</Button>
             </Grid>
 
             <Grid item>
