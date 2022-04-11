@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
-import FileUploads from './components/FileUploads'
+import FileList from './components/FileList'
 import Buttons from './components/Buttons'
 import Output from './components/Output'
 
@@ -17,6 +17,8 @@ function App() {
   const [output, setOutput] = React.useState('')
 
   const [espStub, setEspStub] = React.useState(undefined)
+
+  const [uploads, setUploads] = React.useState([])
 
   const clickConnect = async () => {
     if (espStub) {
@@ -160,7 +162,10 @@ function App() {
 
       <Grid container direction='column' alignItems='center' spacing={1} style={{ marginTop: '.5em', minHeight: 'calc(100vh - 64px - .5em)' }}>
         <Grid item xs={12}>
-          <FileUploads />
+          <FileList
+            uploads={uploads}
+            setUploads={setUploads}
+          />
         </Grid>
 
         <Grid item xs={12}>

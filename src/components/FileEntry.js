@@ -7,7 +7,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Typography } from '@mui/material'
 
-const FileUpload = (props) => {
+const FileEntry = (props) => {
     const uploadFile = (e) => {
         let reader = new FileReader()
 
@@ -68,4 +68,4 @@ const FileUpload = (props) => {
     )
 }
 
-export default FileUpload
+export default FileEntry
