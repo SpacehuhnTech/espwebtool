@@ -12,6 +12,11 @@
   <link rel="icon" href="%PUBLIC_URL%/logo512.png" />
   <link rel="stylesheet" href="%PUBLIC_URL%/index.css" />
   <title>ESPWebTool</title>
+
+  <script module>
+    window.esptoolPackage = import("https://unpkg.com/esp-web-flasher@5.1.2/dist/web/index.js?module");
+  </script>
+  
 </head>
 
 <body>
@@ -28,7 +33,7 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
 
-    <script defer data-domain="esp.huhn.me" src="https://plausible.io/js/plausible.js"></script>
+  <script defer data-domain="esp.huhn.me" src="https://plausible.io/js/plausible.js"></script>
 </body>
 
 </html>

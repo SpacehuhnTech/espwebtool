@@ -4,11 +4,9 @@ import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
+import DeleteIcon from '@mui/icons-material/Delete'
 
-const FileUpload = () => {
-    const [name, setName] = React.useState('Select File')
-    const [content, setContent] = React.useState([])
-
+const FileUpload = (props) => {
     const uploadFile = (e) => {
         let reader = new FileReader()
 
@@ -17,11 +15,17 @@ const FileUpload = () => {
             const array = new Uint8Array(arrayBuffer)
             //const binaryString = String.fromCharCode.apply(null, array)
 
-            setContent(array)
+            props.setData({
+                ...props.data,
+                contents: array
+            })
         }
 
         reader.readAsArrayBuffer(e.target.files[0])
-        setName(e.target.files[0].name)
+        props.setData({
+            ...props.data,
+            fileName: e.target.files[0].name
+        })
     }
 
     return (
@@ -33,13 +37,20 @@ const FileUpload = () => {
                     type='number'
                     size='small'
                     sx={{ width: '10em' }}
+                    value={props.data.offset > 0 ? props.data.offset : ''}
+                    onChange={(e) => {
+                        props.setData({
+                            ...props.data,
+                            offset: e.target.value
+                        })
+                    }}
                 />
             </Grid>
 
             <Grid item>
                 <Button
                     component='label'
-                    color={content.length > 0 ? 'secondary' : 'primary'}
+                    color={props.data.contents.length > 0 ? 'secondary' : 'primary'}
                     sx={{
                         height: 40,
                         paddingLeft: '1em',
@@ -49,9 +60,9 @@ const FileUpload = () => {
                         lineHeight: '1.25em',
                     }}
                 >
-                    {name.substring(0, 32)}
+                    {props.data.fileName.substring(0, 32)}
 
-                    {content.length === 0 &&
+                    {props.data.contents.length === 0 &&
                         <DriveFolderUploadIcon style={{ paddingLeft: '.2em' }} />
                     }
 
@@ -60,6 +71,12 @@ const FileUpload = () => {
                         hidden
                         onChange={uploadFile}
                     />
+                </Button>
+            </Grid>
+
+            <Grid item>
+                <Button onClick={props.delete} color='error'>
+                    <DeleteIcon />
                 </Button>
             </Grid>
         </Grid>
