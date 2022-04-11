@@ -24,7 +24,7 @@ const Footer = () => {
                 align='center'
                 display='block'
                 sx={{ color: '#ddd' }}>
-                {version.name}
+                <Link href='https://github.com/spacehuhntech/espwebtool' target='_blank' underline='hover' color='inherit'>{version.name}</Link>
             </Typography>
         </Box>
     )

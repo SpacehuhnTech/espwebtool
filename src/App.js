@@ -93,7 +93,7 @@ function App() {
     }*/
     return ['test']//validFiles;
   }
-  
+
   const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
@@ -132,7 +132,7 @@ function App() {
         await espStub.flashData(
           contents,
           (bytesWritten, totalBytes) => {
-            console.log('written: ',bytesWritten)
+            console.log('written: ', bytesWritten)
             //progressBar.style.width = Math.floor((bytesWritten / totalBytes) * 100) + "%";
           },
           offset
@@ -158,9 +158,15 @@ function App() {
     <Box>
       <Header />
 
-      <Grid container direction='column' alignItems='center' spacing={1} style={{ marginTop: '.5em', marginBottom: '1em' }}>
+      <Grid container direction='column' alignItems='center' spacing={1} style={{ marginTop: '.5em', minHeight: 'calc(100vh - 64px - .5em)' }}>
         <Grid item xs={12}>
           <FileUploads />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Output
+            received={''}
+          />
         </Grid>
 
         <Grid item xs={12} sx={{ marginTop: '1em', marginBottom: '1em' }}>
@@ -170,14 +176,12 @@ function App() {
           />
         </Grid>
 
-        <Grid item xs={12}>
-          <Output
-            received={''}
-          />
+
+        <Grid item xs={12} sx={{ marginTop: 'auto', marginBottom: '1em' }}>
+          <Footer />
         </Grid>
       </Grid>
 
-      <Footer />
     </Box>
   )
 }

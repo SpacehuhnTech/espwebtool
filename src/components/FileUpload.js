@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { Typography } from '@mui/material'
 
 const FileUpload = (props) => {
     const uploadFile = (e) => {
@@ -48,30 +49,14 @@ const FileUpload = (props) => {
             </Grid>
 
             <Grid item>
-                <Button
-                    component='label'
-                    color={props.data.contents.length > 0 ? 'secondary' : 'primary'}
+                <Typography
                     sx={{
-                        height: 40,
-                        paddingLeft: '1em',
-                        paddingRight: '1em',
-                        width: 200,
-                        wordBreak: 'break-all',
-                        lineHeight: '1.25em',
-                    }}
-                >
+                        lineHeight: '40px',
+                        textAlign: 'center',
+                        width: '18em',
+                    }}>
                     {props.data.fileName.substring(0, 32)}
-
-                    {props.data.contents.length === 0 &&
-                        <DriveFolderUploadIcon style={{ paddingLeft: '.2em' }} />
-                    }
-
-                    <input
-                        type='file'
-                        hidden
-                        onChange={uploadFile}
-                    />
-                </Button>
+                </Typography>
             </Grid>
 
             <Grid item>
