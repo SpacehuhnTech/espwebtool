@@ -9,10 +9,13 @@ const preCSS = {
 }
 
 const boxCSS = {
-    minHeight: '5em',
-    minWidth: '30em',
-    maxHeight: '200px',
-    width: 'calc(100vw - 4em)',
+    width: 'calc(100vw - 1rem)',
+    maxWidth: '40rem',
+
+    height: '10rem',
+    minHeight: '5rem',
+    maxHeight: '50rem',
+
     background: '#eee',
     borderRadius: '4px',
     padding: 0,

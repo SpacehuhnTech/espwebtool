@@ -7,11 +7,23 @@ const Buttons = (props) => {
     return (
         <Grid container spacing={1} direction='row' justifyContent='space-between' alignItems='flex-start'>
             <Grid item>
-                <Button color='error' onClick={props.erase}>Erase</Button>
+                <Button
+                    color='error'
+                    onClick={props.erase}
+                >
+                    Erase
+                </Button>
             </Grid>
 
             <Grid item>
-                <Button variant='contained' onClick={props.program}>Program</Button>
+                <Button
+                    variant='contained'
+                    color='success'
+                    onClick={props.program}
+                    disabled={props.disabled}
+                >
+                    Program
+                </Button>
             </Grid>
         </Grid>
     )

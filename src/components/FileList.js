@@ -1,10 +1,13 @@
 import React from 'react'
 
 import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
-
-import FileEntry from './FileEntry'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 const FileList = (props) => {
     const uploadFile = (e) => {
@@ -25,50 +28,86 @@ const FileList = (props) => {
         reader.readAsArrayBuffer(e.target.files[0])
     }
 
+    const setOffset = (index, newOffset) => {
+        const newUploads = [...props.uploads]
+        newUploads[index] = {
+            ...props.uploads[index],
+            offset: newOffset
+        }
+        props.setUploads(newUploads)
+    }
+
+    const deleteFile = (index) => {
+        const newUploads = [...props.uploads]
+        newUploads.splice(index, 1)
+        props.setUploads(newUploads)
+    }
+
     return (
-        <Grid container direction='column' justifyContent='center' alignItems='center' spacing={.5} sx={{minHeight: '200px'}}>
-            {props.uploads.map((upload, i) =>
-                <Grid item key={i}>
-                    <FileEntry
-                        data={upload}
-                        setData={(newObject) => {
-                            const newUploads = [...props.uploads]
-                            newUploads[i] = newObject
-                            props.setUploads(newUploads)
-                        }}
-                        delete={() => {
-                            const newUploads = [...props.uploads]
-                            newUploads.splice(i, 1)
-                            props.setUploads(newUploads)
-                        }}
-                    />
+        <Box textAlign='center'>
+            { /* File List */}
+            <Grid container spacing={.5}
+                sx={{
+                    width: 'calc(100vw - 3rem)',
+                    maxWidth: '40rem',
+                }}>
+
+                {/* Offset */}
+                <Grid item xs={2}>
+                    {props.uploads.map((file, i) =>
+                        <TextField
+                            key={i}
+                            label='0x'
+                            variant='outlined'
+                            type='number'
+                            size='small'
+                            value={file.offset > 0 ? file.offset : ''}
+                            onChange={(e) => setOffset(i, e.target.value)}
+                        />)}
                 </Grid>
-            )}
 
-            <Grid item>
-                <Button
-                    component='label'
-                    color='primary'
-                    sx={{
-                        height: 40,
-                        paddingLeft: '1em',
-                        paddingRight: '1em',
-                        width: 200,
-                        wordBreak: 'break-all',
-                        lineHeight: '1.25em',
-                    }}
-                >
-                    Add File <DriveFolderUploadIcon style={{ paddingLeft: '.2em' }} />
+                {/* File Name */}
+                <Grid item xs={9}>
+                    {props.uploads.map((file, i) =>
+                        <Typography
+                            key={i}
+                            sx={{
+                                lineHeight: '40px',
+                                textAlign: 'center',
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
+                            }}>
+                            {file.fileName}
+                        </Typography>
+                    )}
+                </Grid>
 
-                    <input
-                        type='file'
-                        hidden
-                        onChange={uploadFile}
-                    />
-                </Button>
+                {/* Delete */}
+                <Grid item xs={1}>
+                    {props.uploads.map((file, i) =>
+                        <IconButton
+                            key={i}
+                            color='error'
+                            onClick={() => deleteFile(i)}
+                            fullWidth
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    )}
+                </Grid>
             </Grid>
 
-        </Grid>
+            { /* Upload new File Button */}
+            <Button component='label' color='primary'>
+                Add File <DriveFolderUploadIcon style={{ paddingLeft: '.2em' }} />
+                <input
+                    type='file'
+                    hidden
+                    onChange={uploadFile}
+                />
+            </Button>
+        </Box>
     )
 }
 

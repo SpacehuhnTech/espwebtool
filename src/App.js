@@ -160,7 +160,12 @@ function App() {
     <Box>
       <Header />
 
-      <Grid container direction='column' alignItems='center' spacing={1} style={{ marginTop: '.5em', minHeight: 'calc(100vh - 64px - .5em)' }}>
+      <Grid container
+        direction='column'
+        alignItems='center'
+        spacing={1}
+        sx={{ marginTop: '.5em', minHeight: 'calc(100vh - 64px - .5em)' }}
+      >
         <Grid item xs={12}>
           <FileList
             uploads={uploads}
@@ -178,6 +183,7 @@ function App() {
           <Buttons
             erase={clickErase}
             program={() => clickConnect().then(() => clickProgram())}
+            disabled={uploads.length === 0}
           />
         </Grid>
 
