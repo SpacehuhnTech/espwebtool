@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -109,6 +110,11 @@ const FileList = (props) => {
             </Button>
         </Box>
     )
+}
+
+FileList.propTypes = {
+    uploads: PropTypes.array,
+    setUploads: PropTypes.func,
 }
 
 export default FileList

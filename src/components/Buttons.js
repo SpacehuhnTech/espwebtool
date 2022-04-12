@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -27,6 +28,12 @@ const Buttons = (props) => {
             </Grid>
         </Grid>
     )
+}
+
+Buttons.propTypes = {
+    erase: PropTypes.func,
+    program: PropTypes.func,
+    disabled: PropTypes.bool,
 }
 
 export default Buttons

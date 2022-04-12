@@ -14,10 +14,13 @@ const formatMacAddr = (macAddr) => {
 }
 
 function App() {
+  // Serial output
   const [output, setOutput] = React.useState('')
 
+  // ESP flasher stuff
   const [espStub, setEspStub] = React.useState(undefined)
 
+  // Uploaded Files
   const [uploads, setUploads] = React.useState([])
 
   const clickConnect = async () => {
