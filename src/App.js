@@ -1,11 +1,41 @@
 import React from 'react'
 
 import Box from '@mui/material/Box'
+import Snackbar from '@mui/material/Snackbar'
+import Alert from '@mui/material/Alert'
 
 import Header from './components/Header'
-import Footer from './components/Footer'
 import Flasher from './components/Flasher'
 import Home from './components/Home'
+import Settings from './components/Settings'
+import Footer from './components/Footer'
+
+import { setCookie, getCookie } from './modules/cookie.js'
+
+const saveSettings = (settings) => {
+  setCookie('settings', JSON.stringify(settings), 365)
+}
+
+const loadSettings = () => {
+  let settings = {
+    baudRate: 115200,
+    lineEnding: '\\r\\n',
+    echoFlag: true,
+  }
+
+  const cookieValue = getCookie('settings')
+
+  try {
+    const cookieJSON = JSON.parse(cookieValue)
+
+    if ('baudRate' in cookieJSON) settings.baudRate = cookieJSON.baudRate
+  } catch (e) {
+    console.error(e)
+  }
+
+  saveSettings(settings)
+  return settings
+}
 
 const formatMacAddr = (macAddr) => {
   return macAddr.map((value) => value.toString(16).toUpperCase().padStart(2, '0')).join(':')
@@ -14,6 +44,9 @@ const formatMacAddr = (macAddr) => {
 function App() {
   // Connection status
   const [connected, setConnected] = React.useState(false)
+
+  // Connect/Disconnect Toast Open
+  const [toast, setToast] = React.useState({ open: false, severity: 'info', value: '' })
 
   // Serial output
   const [output, setOutput] = React.useState('')
@@ -27,11 +60,28 @@ function App() {
   // Settings Window
   const [settingsOpen, setSettingsOpen] = React.useState(false)
 
+  // Settings
+  const settings = loadSettings()
+  const [baudRate, setBaudRate] = React.useState(settings.baudRate)
+
+  const closeToast = () => {
+    setToast({ ...toast, open: false })
+  }
+
+  const handleSave = (newSettings) => {
+    //serial.setBaudRate(baudRate)
+
+    saveSettings({
+      baudRate: newSettings.baudRate,
+    })
+
+    console.log(newSettings.baudRate)
+  }
+
   const clickConnect = async () => {
     if (espStub) {
       await espStub.disconnect()
       await espStub.port.close()
-      //toggleUIConnected(false)
       setEspStub(undefined)
       return
     }
@@ -50,10 +100,9 @@ function App() {
       setOutput(`MAC Address: ${formatMacAddr(esploader.macAddr())}`)
 
       const newEspStub = await esploader.runStub()
-      //toggleUIConnected(true)
-      //toggleUIToolbar(true)
+      setConnected(true)
       newEspStub.addEventListener('disconnect', () => {
-        //toggleUIConnected(false)
+        setConnected(false)
         setEspStub(undefined)
       })
 
@@ -165,22 +214,39 @@ function App() {
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Header sx={{ mb: '1rem' }}/>
+      <Header sx={{ mb: '1rem' }} />
 
       {connected ?
         <Flasher
           uploads={uploads}
           setUploads={setUploads}
-          erase={() => console.log('erasing')}
-          program={() => clickConnect().then(() => clickErase())}
+          erase={() => clickErase()}
+          program={() => console.log('program')}
         />
         :
         <Home
-          connect={() => setConnected(true)}
+          connect={clickConnect}
           supported={() => true}
           openSettings={() => setSettingsOpen(true)}
         />
       }
+
+      {/* Settings Window */}
+      <Settings
+        open={settingsOpen}
+        close={() => setSettingsOpen(false)}
+        baudRate={baudRate}
+        save={handleSave}
+        openPort={connected}
+        saveToast={() => setToast({ open: true, severity: 'success', value: 'Settings saved ✨' })}
+      />
+
+      {/* (Dis)connected Toast */}
+      <Snackbar open={toast.open} autoHideDuration={4000} onClose={closeToast}>
+        <Alert onClose={closeToast} severity={toast.severity}>
+          {toast.value}
+        </Alert>
+      </Snackbar>
 
       <Footer sx={{ mt: 'auto' }} />
     </Box>

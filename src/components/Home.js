@@ -45,7 +45,7 @@ const Home = (props) => {
 
                         <Alert severity='info' align='left'>
                             1. Click on CONNECT<br />
-                            2. Plug in your device & select the port<br />
+                            2. Plug in your ESP & select the port<br />
                             3. Upload your binaries and flash them 😊<br />
                         </Alert>
                     </Box>
