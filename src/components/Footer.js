@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
@@ -6,9 +7,9 @@ import Typography from '@mui/material/Typography'
 
 import version from '../version.js'
 
-const Footer = () => {
+const Footer = (props) => {
     return (
-        <Box>
+        <Box sx={props.sx}>
             { /* Made in Germany :D */}
             <Box sx={{ mx: 'auto', mt: 0 }}>
                 <Typography
@@ -28,6 +29,10 @@ const Footer = () => {
             </Typography>
         </Box>
     )
+}
+
+Footer.propTypes = {
+    sx: PropTypes.object,
 }
 
 export default Footer      

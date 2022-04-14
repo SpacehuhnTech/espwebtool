@@ -91,7 +91,6 @@ const FileList = (props) => {
                             key={i}
                             color='error'
                             onClick={() => deleteFile(i)}
-                            fullWidth
                         >
                             <DeleteIcon />
                         </IconButton>

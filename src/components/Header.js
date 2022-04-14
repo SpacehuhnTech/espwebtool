@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -7,11 +8,12 @@ import Button from '@mui/material/Button'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import UploadIcon from '@mui/icons-material/Upload'
 
-const Header = () => {
+const Header = (props) => {
     return (
         <AppBar
             position='static'
             sx={{
+                ...props.sx,
                 background: '#0276aa',
             }}
         >
@@ -42,6 +44,10 @@ const Header = () => {
             </Toolbar>
         </AppBar>
     )
+}
+
+Header.propTypes = {
+    sx: PropTypes.object,
 }
 
 export default Header

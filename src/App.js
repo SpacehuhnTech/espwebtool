@@ -1,19 +1,20 @@
 import React from 'react'
 
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
-import FileList from './components/FileList'
-import Buttons from './components/Buttons'
-import Output from './components/Output'
+import Flasher from './components/Flasher'
+import Home from './components/Home'
 
 const formatMacAddr = (macAddr) => {
   return macAddr.map((value) => value.toString(16).toUpperCase().padStart(2, '0')).join(':')
 }
 
 function App() {
+  // Connection status
+  const [connected, setConnected] = React.useState(false)
+
   // Serial output
   const [output, setOutput] = React.useState('')
 
@@ -22,6 +23,9 @@ function App() {
 
   // Uploaded Files
   const [uploads, setUploads] = React.useState([])
+
+  // Settings Window
+  const [settingsOpen, setSettingsOpen] = React.useState(false)
 
   const clickConnect = async () => {
     if (espStub) {
@@ -62,16 +66,16 @@ function App() {
 
   const clickErase = async () => {
     if (
-      window.confirm("This will erase the entire flash. Click OK to continue.")
+      window.confirm('This will erase the entire flash. Click OK to continue.')
     ) {
       //baudRate.disabled = true;
       //butErase.disabled = true;
       //butProgram.disabled = true;
       try {
-        console.log("Erasing flash memory. Please wait...");
+        console.log('Erasing flash memory. Please wait...');
         let stamp = Date.now();
         await espStub.eraseFlash();
-        console.log("Finished. Took " + (Date.now() - stamp) + "ms to erase.");
+        console.log('Finished. Took ' + (Date.now() - stamp) + 'ms to erase.');
       } catch (e) {
         console.error(e);
       } finally {
@@ -110,7 +114,7 @@ function App() {
       return new Promise((resolve, reject) => {
         reader.onerror = () => {
           reader.abort();
-          reject(new DOMException("Problem parsing input file."));
+          reject(new DOMException('Problem parsing input file.'));
         };
 
         reader.onload = () => {
@@ -128,17 +132,17 @@ function App() {
       //offsets[i].disabled = true;
     }
     for (let file of getValidFiles()) {
-      //progress[file].classList.remove("hidden");
+      //progress[file].classList.remove('hidden');
       let binfile = 'HERE FIRMWARE'//firmware[file].files[0];
       let contents = await readUploadedFileAsArrayBuffer(binfile);
       try {
         let offset = parseInt(0/*HERE_OFFSET offsets[file].value*/, 16);
-        //const progressBar = progress[file].querySelector("div");
+        //const progressBar = progress[file].querySelector('div');
         await espStub.flashData(
           contents,
           (bytesWritten, totalBytes) => {
             console.log('written: ', bytesWritten)
-            //progressBar.style.width = Math.floor((bytesWritten / totalBytes) * 100) + "%";
+            //progressBar.style.width = Math.floor((bytesWritten / totalBytes) * 100) + '%';
           },
           offset
         );
@@ -150,52 +154,35 @@ function App() {
     for (let i = 0; i < 4; i++) {
       //firmware[i].disabled = false;
       //offsets[i].disabled = false;
-      //progress[i].classList.add("hidden");
-      //progress[i].querySelector("div").style.width = "0";
+      //progress[i].classList.add('hidden');
+      //progress[i].querySelector('div').style.width = '0';
     }
     //butErase.disabled = false;
     //baudRate.disabled = false;
     //butProgram.disabled = getValidFiles().length == 0;
-    console.log("To run the new firmware, please reset your device.");
+    console.log('To run the new firmware, please reset your device.');
   }
 
   return (
-    <Box>
-      <Header />
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Header sx={{ mb: '1rem' }}/>
 
-      <Grid container
-        direction='column'
-        alignItems='center'
-        spacing={1}
-        sx={{ marginTop: '.5em', minHeight: 'calc(100vh - 64px - .5em)' }}
-      >
-        <Grid item xs={12}>
-          <FileList
-            uploads={uploads}
-            setUploads={setUploads}
-          />
-        </Grid>
+      {connected ?
+        <Flasher
+          uploads={uploads}
+          setUploads={setUploads}
+          erase={() => console.log('erasing')}
+          program={() => clickConnect().then(() => clickErase())}
+        />
+        :
+        <Home
+          connect={() => setConnected(true)}
+          supported={() => true}
+          openSettings={() => setSettingsOpen(true)}
+        />
+      }
 
-        <Grid item xs={12}>
-          <Output
-            received={''}
-          />
-        </Grid>
-
-        <Grid item xs={12} sx={{ marginTop: '1em', marginBottom: '1em' }}>
-          <Buttons
-            erase={clickErase}
-            program={() => clickConnect().then(() => clickProgram())}
-            disabled={uploads.length === 0}
-          />
-        </Grid>
-
-
-        <Grid item xs={12} sx={{ marginTop: 'auto', marginBottom: '1em' }}>
-          <Footer />
-        </Grid>
-      </Grid>
-
+      <Footer sx={{ mt: 'auto' }} />
     </Box>
   )
 }
