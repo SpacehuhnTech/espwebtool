@@ -97,6 +97,7 @@ function App() {
       },
       debug: (...args) => console.debug(...args),
       error: (...args) => console.error(...args),
+      baudRate: baudRate,
     })
     try {
       await esploader.initialize()
@@ -141,67 +142,32 @@ function App() {
 
   }
 
-  const getValidFiles = () => {
-    // Get a list of file and offsets
-    // This will be used to check if we have valid stuff
-    // and will also return a list of files to program
-    let validFiles = []
-    let offsetVals = []
-
-    uploads.forEach(upload => {
-      if (upload.contents.length > 0 && !offsetVals.includes(upload.offset)) {
-        validFiles.push(upload.contents)
-        offsetVals.push(upload.offset)
-      }
-    })
-
-    return validFiles
-  }
-
   const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  const clickProgram = async () => {
-    //baudRate.disabled = true;
-    //butErase.disabled = true;
-    //butProgram.disabled = true;
-    //for (let i = 0; i < 4; i++) {
-    //firmware[i].disabled = true;
-    //offsets[i].disabled = true;
-    //}
-
-    const validFiles = getValidFiles()
-    validFiles.forEach(async file => {
-      //progress[file].classList.remove('hidden');
-      //let binfile = 'HERE FIRMWARE'//firmware[file].files[0];
-      //let contents = await readUploadedFileAsArrayBuffer(binfile);
+  const clickProgram = /*async*/ () => {
+    for (const file of uploads) {
       try {
-        let offset = parseInt(0/*HERE_OFFSET offsets[file].value*/, 16);
-        //const progressBar = progress[file].querySelector('div');
-        await espStub.flashData(
+        console.log(file)
+
+        /*await*/ espStub.flashData(
           file.contents,
           (bytesWritten, totalBytes) => {
-            setOutput(`${bytesWritten} written of ${totalBytes} total\n`)
+            console.log(
+              Math.floor((bytesWritten / totalBytes) * 100) + "%"
+            )
           },
-          offset
-        )
-        await sleep(100)
+          0,//parseInt(file.offset, 16)
+        ).then(() => sleep(100)).then(() => console.log('done'))
+
+        //await sleep(100)
       } catch (e) {
         console.error(e)
       }
-    })
-
-    for (let i = 0; i < 4; i++) {
-      //firmware[i].disabled = false;
-      //offsets[i].disabled = false;
-      //progress[i].classList.add('hidden');
-      //progress[i].querySelector('div').style.width = '0';
     }
-    //butErase.disabled = false;
-    //baudRate.disabled = false;
-    //butProgram.disabled = getValidFiles().length == 0;
-    console.log('To run the new firmware, please reset your device.');
+
+    //console.log('=> To run the new firmware, please reset your device.');
   }
 
   return (
