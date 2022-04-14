@@ -13,8 +13,8 @@ import OperaIcon from '../icons/Opera'
 import SettingsIcon from '@mui/icons-material/Settings'
 
 const gridCSS = {
-    height: 'calc(100vh - 160px)',
-    minHeight: '10em',
+    //height: 'calc(100vh - 160px)',
+    //minHeight: '10em',
 }
 
 const Home = (props) => {

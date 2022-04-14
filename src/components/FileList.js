@@ -14,6 +14,11 @@ const FileList = (props) => {
     const uploadFile = (e) => {
         let reader = new FileReader()
 
+        reader.onerror = () => {
+            reader.abort()
+            //reject(new DOMException('Problem parsing input file.'));
+        }
+
         reader.onload = function () {
             const arrayBuffer = this.result
             const array = new Uint8Array(arrayBuffer)

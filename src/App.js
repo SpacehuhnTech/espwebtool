@@ -1,12 +1,15 @@
 import React from 'react'
 
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 
 import Header from './components/Header'
-import Flasher from './components/Flasher'
 import Home from './components/Home'
+import FileList from './components/FileList'
+import Output from './components/Output'
+import Buttons from './components/Buttons'
 import Settings from './components/Settings'
 import Footer from './components/Footer'
 
@@ -69,13 +72,11 @@ function App() {
   }
 
   const handleSave = (newSettings) => {
-    //serial.setBaudRate(baudRate)
+    setBaudRate(newSettings.baudRate)
 
     saveSettings({
       baudRate: newSettings.baudRate,
     })
-
-    console.log(newSettings.baudRate)
   }
 
   const clickConnect = async () => {
@@ -89,15 +90,19 @@ function App() {
     const esploaderMod = await window.esptoolPackage
 
     const esploader = await esploaderMod.connect({
-      log: (...args) => console.log(...args),
+      log: (...args) => {
+        //console.log(...args)
+        console.log(args[0])
+        setOutput(`${args[0]}\n`)
+      },
       debug: (...args) => console.debug(...args),
       error: (...args) => console.error(...args),
     })
     try {
       await esploader.initialize()
 
-      setOutput(`Connected to ${esploader.chipName}`)
-      setOutput(`MAC Address: ${formatMacAddr(esploader.macAddr())}`)
+      setOutput(`Connected to ${esploader.chipName}\n`)
+      setOutput(`MAC Address: ${formatMacAddr(esploader.macAddr())}\n`)
 
       const newEspStub = await esploader.runStub()
       setConnected(true)
@@ -140,16 +145,17 @@ function App() {
     // Get a list of file and offsets
     // This will be used to check if we have valid stuff
     // and will also return a list of files to program
-    let validFiles = [];
-    let offsetVals = [];
-    /*for (let i = 0; i < 4; i++) {
-      let offs = parseInt(offsets[i].value, 16);
-      if (firmware[i].files.length > 0 && !offsetVals.includes(offs)) {
-        validFiles.push(i);
-        offsetVals.push(offs);
+    let validFiles = []
+    let offsetVals = []
+
+    uploads.forEach(upload => {
+      if (upload.contents.length > 0 && !offsetVals.includes(upload.offset)) {
+        validFiles.push(upload.contents)
+        offsetVals.push(upload.offset)
       }
-    }*/
-    return ['test']//validFiles;
+    })
+
+    return validFiles
   }
 
   const sleep = (ms) => {
@@ -157,49 +163,35 @@ function App() {
   }
 
   const clickProgram = async () => {
-    const readUploadedFileAsArrayBuffer = (inputFile) => {
-      const reader = new FileReader();
-
-      return new Promise((resolve, reject) => {
-        reader.onerror = () => {
-          reader.abort();
-          reject(new DOMException('Problem parsing input file.'));
-        };
-
-        reader.onload = () => {
-          resolve(reader.result);
-        };
-        reader.readAsArrayBuffer(inputFile);
-      });
-    };
-
     //baudRate.disabled = true;
     //butErase.disabled = true;
     //butProgram.disabled = true;
-    for (let i = 0; i < 4; i++) {
-      //firmware[i].disabled = true;
-      //offsets[i].disabled = true;
-    }
-    for (let file of getValidFiles()) {
+    //for (let i = 0; i < 4; i++) {
+    //firmware[i].disabled = true;
+    //offsets[i].disabled = true;
+    //}
+
+    const validFiles = getValidFiles()
+    validFiles.forEach(async file => {
       //progress[file].classList.remove('hidden');
-      let binfile = 'HERE FIRMWARE'//firmware[file].files[0];
-      let contents = await readUploadedFileAsArrayBuffer(binfile);
+      //let binfile = 'HERE FIRMWARE'//firmware[file].files[0];
+      //let contents = await readUploadedFileAsArrayBuffer(binfile);
       try {
         let offset = parseInt(0/*HERE_OFFSET offsets[file].value*/, 16);
         //const progressBar = progress[file].querySelector('div');
         await espStub.flashData(
-          contents,
+          file.contents,
           (bytesWritten, totalBytes) => {
-            console.log('written: ', bytesWritten)
-            //progressBar.style.width = Math.floor((bytesWritten / totalBytes) * 100) + '%';
+            setOutput(`${bytesWritten} written of ${totalBytes} total\n`)
           },
           offset
-        );
-        await sleep(100);
+        )
+        await sleep(100)
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
-    }
+    })
+
     for (let i = 0; i < 4; i++) {
       //firmware[i].disabled = false;
       //offsets[i].disabled = false;
@@ -216,20 +208,42 @@ function App() {
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header sx={{ mb: '1rem' }} />
 
-      {connected ?
-        <Flasher
-          uploads={uploads}
-          setUploads={setUploads}
-          erase={() => clickErase()}
-          program={() => console.log('program')}
-        />
-        :
-        <Home
-          connect={clickConnect}
-          supported={() => true}
-          openSettings={() => setSettingsOpen(true)}
-        />
-      }
+      <Grid container direction='column' alignItems='center' spacing={1}>
+
+        {/* Home & FileUpload Page */}
+        <Grid item xs={12}>
+          {connected ?
+            <FileList
+              uploads={uploads}
+              setUploads={setUploads}
+            />
+            :
+            <Home
+              connect={clickConnect}
+              supported={() => true}
+              openSettings={() => setSettingsOpen(true)}
+            />
+          }
+        </Grid>
+
+        {/* Serial Output */}
+        <Grid item xs={12}>
+          <Output
+            received={output}
+          />
+        </Grid>
+
+        {/* Erase & Program Buttons */}
+        {connected &&
+          <Grid item xs={12} sx={{ my: '1rem' }}>
+            <Buttons
+              erase={() => clickErase()}
+              program={() => clickProgram()}
+              disabled={uploads.length === 0}
+            />
+          </Grid>
+        }
+      </Grid>
 
       {/* Settings Window */}
       <Settings
@@ -248,6 +262,7 @@ function App() {
         </Alert>
       </Snackbar>
 
+      {/* Footer */}
       <Footer sx={{ mt: 'auto' }} />
     </Box>
   )

@@ -13,8 +13,8 @@ const boxCSS = {
     width: 'calc(100vw - 1rem)',
     maxWidth: '40rem',
 
-    height: '10rem',
-    minHeight: '5rem',
+    //height: '10rem',
+    //minHeight: '5rem',
     maxHeight: '50rem',
 
     background: '#eee',
@@ -87,16 +87,18 @@ const Output = (props) => {
         <pre style={preCSS}>
 
             { /* Text */}
-            <Box sx={boxCSS}>
-                <code style={codeCSS}>
-                    {lines.map((line, i) => (
-                        <span key={i}>
-                            {line}
-                            <br />
-                        </span>
-                    ))}
-                </code>
-            </Box>
+            {lines.length > 0 &&
+                <Box sx={boxCSS}>
+                    <code style={codeCSS}>
+                        {lines.map((line, i) => (
+                            <span key={i}>
+                                {line}
+                                <br />
+                            </span>
+                        ))}
+                    </code>
+                </Box>
+            }
 
         </pre>
     )
