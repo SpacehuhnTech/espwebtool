@@ -25,10 +25,10 @@ const formElementCSS = {
 }
 
 const Settings = (props) => {
-    const [baudRate, setBaudRate] = React.useState(props.baudRate)
+    const [baudRate, setBaudRate] = React.useState(props.settings.baudRate)
 
     const cancel = () => {
-        setBaudRate(props.baudRate)
+        setBaudRate(props.settings.baudRate)
         
         props.close()
     }
@@ -80,7 +80,7 @@ const Settings = (props) => {
 Settings.propTypes = {
     open: PropTypes.bool,
     close: PropTypes.func,
-    baudRate: PropTypes.number,
+    settings: PropTypes.object,
     save: PropTypes.func,
     openPort: PropTypes.bool,
     saveToast: PropTypes.func,

@@ -15,15 +15,9 @@ import Footer from './components/Footer'
 
 import { setCookie, getCookie } from './modules/cookie.js'
 
-const saveSettings = (settings) => {
-  setCookie('settings', JSON.stringify(settings), 365)
-}
-
 const loadSettings = () => {
   let settings = {
     baudRate: 115200,
-    lineEnding: '\\r\\n',
-    echoFlag: true,
   }
 
   const cookieValue = getCookie('settings')
@@ -36,7 +30,7 @@ const loadSettings = () => {
     console.error(e)
   }
 
-  saveSettings(settings)
+  //saveSettings(settings)
   return settings
 }
 
@@ -64,19 +58,18 @@ function App() {
   const [settingsOpen, setSettingsOpen] = React.useState(false)
 
   // Settings
-  const settings = loadSettings()
-  const [baudRate, setBaudRate] = React.useState(settings.baudRate)
+  const [settings, setSettings] = React.useState(loadSettings())
+
+  const saveSettings = (newSettings) => {
+    setSettings({
+      baudRate: newSettings.baudRate
+    })
+    
+    setCookie('settings', JSON.stringify(newSettings), 365)
+  }
 
   const closeToast = () => {
     setToast({ ...toast, open: false })
-  }
-
-  const handleSave = (newSettings) => {
-    setBaudRate(newSettings.baudRate)
-
-    saveSettings({
-      baudRate: newSettings.baudRate,
-    })
   }
 
   const clickConnect = async () => {
@@ -97,7 +90,7 @@ function App() {
       },
       debug: (...args) => console.debug(...args),
       error: (...args) => console.error(...args),
-      baudRate: baudRate,
+      baudRate: settings.baudRate,
     })
     try {
       await esploader.initialize()
@@ -215,8 +208,8 @@ function App() {
       <Settings
         open={settingsOpen}
         close={() => setSettingsOpen(false)}
-        baudRate={baudRate}
-        save={handleSave}
+        save={saveSettings}
+        settings={settings}
         openPort={connected}
         saveToast={() => setToast({ open: true, severity: 'success', value: 'Settings saved ✨' })}
       />
