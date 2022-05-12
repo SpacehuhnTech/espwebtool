@@ -139,13 +139,31 @@ function App() {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  const clickProgram = /*async*/ () => {
+  const clickProgram = async () => {
+    const toArrayBuffer = (inputFile) => {
+      const reader = new FileReader()
+
+      return new Promise((resolve, reject) => {
+          reader.onerror = () => {
+              reader.abort();
+              reject(new DOMException("Problem parsing input file."));
+          }
+
+          reader.onload = () => {
+              resolve(reader.result);
+          }
+          reader.readAsArrayBuffer(inputFile)
+      })
+  }
+
     for (const file of uploads) {
       try {
+        const contents = await toArrayBuffer(file.obj)
         console.log(file)
+        console.log(contents)
 
         /*await*/ espStub.flashData(
-          file.contents,
+          contents,
           (bytesWritten, totalBytes) => {
             console.log(
               Math.floor((bytesWritten / totalBytes) * 100) + "%"

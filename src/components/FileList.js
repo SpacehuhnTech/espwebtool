@@ -12,26 +12,11 @@ import DeleteIcon from '@mui/icons-material/Delete'
 
 const FileList = (props) => {
     const uploadFile = (e) => {
-        let reader = new FileReader()
-
-        reader.onerror = () => {
-            reader.abort()
-            //reject(new DOMException('Problem parsing input file.'));
-        }
-
-        reader.onload = function () {
-            const arrayBuffer = this.result
-            const array = new Uint8Array(arrayBuffer)
-            //const binaryString = String.fromCharCode.apply(null, array)
-
-            props.setUploads([...props.uploads, {
-                offset: 0,
-                contents: array,
-                fileName: e.target.files[0].name,
-            }])
-        }
-
-        reader.readAsArrayBuffer(e.target.files[0])
+        props.setUploads([...props.uploads, {
+            offset: 0,
+            fileName: e.target.files[0].name,
+            obj: e.target.files[0],
+        }])
     }
 
     const setOffset = (index, newOffset) => {
