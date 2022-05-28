@@ -58,6 +58,13 @@ function App() {
   // Settings
   const [settings, setSettings] = React.useState(loadSettings())
 
+  const addLine = (msg) => {
+    setOutput({
+        time: new Date(),
+        value: `${msg}\n`,
+    })
+  }
+
   const saveSettings = (newSettings) => {
     setSettings({
       baudRate: newSettings.baudRate
@@ -78,9 +85,8 @@ function App() {
 
     const esploader = await esploaderMod.connect({
       log: (...args) => {
-        //console.log(...args)
-        console.log(args[0])
-        setOutput(`${args[0]}\n`)
+        //console.log(args[0])
+        addLine(args[0])
       },
       debug: (...args) => console.debug(...args),
       error: (...args) => console.error(...args),
@@ -92,8 +98,8 @@ function App() {
 
       await esploader.initialize()
 
-      setOutput(`Connected to ${esploader.chipName}\n`)
-      setOutput(`MAC Address: ${formatMacAddr(esploader.macAddr())}\n`)
+      addLine(`Connected to ${esploader.chipName}`)
+      addLine(`MAC Address: ${formatMacAddr(esploader.macAddr())}`)
 
       const newEspStub = await esploader.runStub()
 
@@ -110,7 +116,7 @@ function App() {
         setConnected(false)
         setEspStub(undefined)
         toast.warning('Disconnected 💔', { autoClose: 3000, toastId: 'settings' })
-        setOutput(`------------------------------------------------------------\n`)
+        addLine(`------------------------------------------------------------`)
       })
 
       setEspStub(newEspStub)
@@ -130,14 +136,13 @@ function App() {
     if (
       window.confirm('This will erase the entire flash. Click OK to continue.')
     ) {
-      //baudRate.disabled = true;
-      //butErase.disabled = true;
-      //butProgram.disabled = true;
       try {
-        console.log('Erasing flash memory. Please wait...');
-        let stamp = Date.now();
-        await espStub.eraseFlash();
-        console.log('Finished. Took ' + (Date.now() - stamp) + 'ms to erase.');
+        let stamp = Date.now()
+        addLine(`Start erasing`)
+        let interval = setInterval(() => addLine(`Erasing flash memory. Please wait...`), 3000)
+        await espStub.eraseFlash()
+        addLine(`Finished. Took ${Date.now() - stamp}ms to erase.`)
+        clearInterval(interval)
       } catch (e) {
         console.error(e);
       } finally {
@@ -173,26 +178,24 @@ function App() {
     for (const file of uploads) {
       try {
         const contents = await toArrayBuffer(file.obj)
-        console.log(file)
-        console.log(contents)
 
-        /*await*/ espStub.flashData(
+        await espStub.flashData(
           contents,
           (bytesWritten, totalBytes) => {
-            console.log(
-              Math.floor((bytesWritten / totalBytes) * 100) + "%"
-            )
+            addLine(`Flashing... ${Math.floor((bytesWritten / totalBytes) * 100)}%`)
           },
           0,//parseInt(file.offset, 16)
-        ).then(() => sleep(100)).then(() => console.log('done'))
-
-        //await sleep(100)
+        )
+        
+        await sleep(100)
+        addLine(`Done!`)
+        addLine(`To run the new firmware please reset your device.`)
       } catch (e) {
+        addLine(`ERROR!`)
+        addLine(`${e}`)
         console.error(e)
       }
     }
-
-    //console.log('=> To run the new firmware, please reset your device.');
   }
 
   return (

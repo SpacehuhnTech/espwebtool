@@ -15,7 +15,7 @@ const boxCSS = {
 
     //height: '10rem',
     //minHeight: '5rem',
-    maxHeight: '50rem',
+    maxHeight: '20rem',
 
     background: '#eee',
     borderRadius: '4px',
@@ -64,7 +64,7 @@ const Output = (props) => {
 
     React.useEffect(
         () => {
-            const str = `${received.current}${props.received}`
+            const str = `${received.current}${props.received.value}`
             const lines = str.split('\n')
 
             let newReceived = str
