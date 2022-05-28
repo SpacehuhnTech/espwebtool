@@ -1,9 +1,10 @@
 import React from 'react'
 
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Snackbar from '@mui/material/Snackbar'
-import Alert from '@mui/material/Alert'
 
 import Header from './components/Header'
 import Home from './components/Home'
@@ -42,9 +43,6 @@ function App() {
   // Connection status
   const [connected, setConnected] = React.useState(false)
 
-  // Connect/Disconnect Toast Open
-  const [toast, setToast] = React.useState({ open: false, severity: 'info', value: '' })
-
   // Serial output
   const [output, setOutput] = React.useState('')
 
@@ -64,12 +62,8 @@ function App() {
     setSettings({
       baudRate: newSettings.baudRate
     })
-    
-    setCookie('settings', JSON.stringify(newSettings), 365)
-  }
 
-  const closeToast = () => {
-    setToast({ ...toast, open: false })
+    setCookie('settings', JSON.stringify(newSettings), 365)
   }
 
   const clickConnect = async () => {
@@ -92,21 +86,41 @@ function App() {
       error: (...args) => console.error(...args),
       baudRate: settings.baudRate,
     })
+
     try {
+      toast.info("Connecting...", { autoClose: false, toastId: 'connecting' })
+
       await esploader.initialize()
 
       setOutput(`Connected to ${esploader.chipName}\n`)
       setOutput(`MAC Address: ${formatMacAddr(esploader.macAddr())}\n`)
 
       const newEspStub = await esploader.runStub()
+
       setConnected(true)
-      newEspStub.addEventListener('disconnect', () => {
+      toast.update('connecting', {
+        render: 'Connected 🚀',
+        type: toast.TYPE.SUCCESS,
+        autoClose: 3000
+      })
+
+      console.log(newEspStub)
+
+      newEspStub.port.addEventListener('disconnect', () => {
         setConnected(false)
         setEspStub(undefined)
+        toast.warning('Disconnected 💔', { autoClose: 3000, toastId: 'settings' })
+        setOutput(`------------------------------------------------------------\n`)
       })
 
       setEspStub(newEspStub)
     } catch (err) {
+      toast.update('connecting', {
+        render: 'Encountered error 🙁',
+        type: toast.TYPE.ERROR,
+        autoClose: 3000
+      })
+
       await esploader.disconnect()
       throw err
     }
@@ -144,17 +158,17 @@ function App() {
       const reader = new FileReader()
 
       return new Promise((resolve, reject) => {
-          reader.onerror = () => {
-              reader.abort();
-              reject(new DOMException("Problem parsing input file."));
-          }
+        reader.onerror = () => {
+          reader.abort();
+          reject(new DOMException("Problem parsing input file."));
+        }
 
-          reader.onload = () => {
-              resolve(reader.result);
-          }
-          reader.readAsArrayBuffer(inputFile)
+        reader.onload = () => {
+          resolve(reader.result);
+        }
+        reader.readAsArrayBuffer(inputFile)
       })
-  }
+    }
 
     for (const file of uploads) {
       try {
@@ -229,15 +243,11 @@ function App() {
         save={saveSettings}
         settings={settings}
         openPort={connected}
-        saveToast={() => setToast({ open: true, severity: 'success', value: 'Settings saved ✨' })}
+        saveToast={() => toast.success('Settings saved ✨', { autoClose: 3000, toastId: 'settings' })}
       />
 
-      {/* (Dis)connected Toast */}
-      <Snackbar open={toast.open} autoHideDuration={4000} onClose={closeToast}>
-        <Alert onClose={closeToast} severity={toast.severity}>
-          {toast.value}
-        </Alert>
-      </Snackbar>
+      {/* Toaster */}
+      <ToastContainer />
 
       {/* Footer */}
       <Footer sx={{ mt: 'auto' }} />
