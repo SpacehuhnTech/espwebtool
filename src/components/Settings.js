@@ -17,6 +17,7 @@ const baudrates = [
     230400,
     460800,
     921600,
+    //3000000,
 ]
 
 const formElementCSS = {

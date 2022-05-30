@@ -16,6 +16,13 @@ import Footer from './components/Footer'
 
 import { setCookie, getCookie } from './modules/cookie.js'
 
+const connectESP = async (t) => {
+  const esploaderMod = await window.esptoolPackage
+
+  const e = await navigator.serial.requestPort()
+  return t.log("Connecting..."), await e.open({ baudRate: t.baudRate }), t.log("Connected successfully."), new esploaderMod.ESPLoader(e, t)
+}
+
 const loadSettings = () => {
   let settings = {
     baudRate: 115200,
@@ -44,7 +51,7 @@ function App() {
   const [connected, setConnected] = React.useState(false)
 
   // Serial output
-  const [output, setOutput] = React.useState('')
+  const [output, setOutput] = React.useState({ time: new Date(), value: '' })
 
   // ESP flasher stuff
   const [espStub, setEspStub] = React.useState(undefined)
@@ -60,8 +67,8 @@ function App() {
 
   const addLine = (msg) => {
     setOutput({
-        time: new Date(),
-        value: `${msg}\n`,
+      time: new Date(),
+      value: `${msg}\n`,
     })
   }
 
@@ -81,16 +88,14 @@ function App() {
       return
     }
 
-    const esploaderMod = await window.esptoolPackage
-
-    const esploader = await esploaderMod.connect({
+    const esploader = await connectESP({
       log: (...args) => {
-        //console.log(args[0])
-        addLine(args[0])
+        //console.log(...args)
+        addLine(`${args[0]}`)
       },
       debug: (...args) => console.debug(...args),
       error: (...args) => console.error(...args),
-      baudRate: settings.baudRate,
+      baudRate: parseInt(settings.baudRate),
     })
 
     try {
@@ -110,7 +115,7 @@ function App() {
         autoClose: 3000
       })
 
-      console.log(newEspStub)
+      //console.log(newEspStub)
 
       newEspStub.port.addEventListener('disconnect', () => {
         setConnected(false)
@@ -118,7 +123,6 @@ function App() {
         toast.warning('Disconnected 💔', { autoClose: 3000, toastId: 'settings' })
         addLine(`------------------------------------------------------------`)
       })
-
       setEspStub(newEspStub)
     } catch (err) {
       toast.update('connecting', {
@@ -128,7 +132,8 @@ function App() {
       })
 
       await esploader.disconnect()
-      throw err
+      await esploader.port.close()
+      addLine(`${err}`)
     }
   }
 
@@ -144,11 +149,9 @@ function App() {
         addLine(`Finished. Took ${Date.now() - stamp}ms to erase.`)
         clearInterval(interval)
       } catch (e) {
-        console.error(e);
-      } finally {
-        //butErase.disabled = false;
-        //baudRate.disabled = false;
-        //butProgram.disabled = getValidFiles().length == 0;
+        addLine(`ERROR!`)
+        addLine(`${e}`)
+        console.error(e)
       }
     }
 
@@ -186,7 +189,7 @@ function App() {
           },
           0,//parseInt(file.offset, 16)
         )
-        
+
         await sleep(100)
         addLine(`Done!`)
         addLine(`To run the new firmware please reset your device.`)

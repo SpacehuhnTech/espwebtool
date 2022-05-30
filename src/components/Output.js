@@ -105,7 +105,7 @@ const Output = (props) => {
 }
 
 Output.propTypes = {
-    received: PropTypes.string,
+    received: PropTypes.object,
 }
 
 export default Output
