@@ -99,7 +99,7 @@ function App() {
     })
 
     try {
-      toast.info("Connecting...", { autoClose: false, toastId: 'connecting' })
+      toast.info("Connecting...", { position: 'top-center', autoClose: false, toastId: 'connecting' })
 
       await esploader.initialize()
 
@@ -120,7 +120,7 @@ function App() {
       newEspStub.port.addEventListener('disconnect', () => {
         setConnected(false)
         setEspStub(undefined)
-        toast.warning('Disconnected 💔', { autoClose: 3000, toastId: 'settings' })
+        toast.warning('Disconnected 💔', { position: 'top-center', autoClose: 3000, toastId: 'settings' })
         addLine(`------------------------------------------------------------`)
       })
       setEspStub(newEspStub)
@@ -179,13 +179,20 @@ function App() {
     }
 
     for (const file of uploads) {
+      toast(`Uploading ${file.fileName.substring(0,28)}...`, { position: 'top-center', progress: 0, toastId: 'upload' })
+
       try {
         const contents = await toArrayBuffer(file.obj)
 
         await espStub.flashData(
           contents,
           (bytesWritten, totalBytes) => {
-            addLine(`Flashing... ${Math.floor((bytesWritten / totalBytes) * 100)}%`)
+            const progress = (bytesWritten / totalBytes)
+            const percentage = Math.floor(progress * 100)
+
+            toast.update('upload', { progress: progress })
+
+            addLine(`Flashing... ${percentage}%`)
           },
           0,//parseInt(file.offset, 16)
         )
@@ -199,7 +206,10 @@ function App() {
         console.error(e)
       }
     }
+
+    toast.success('Done! Reset ESP to run new firmware.', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
   }
+
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -249,7 +259,7 @@ function App() {
         save={saveSettings}
         settings={settings}
         openPort={connected}
-        saveToast={() => toast.success('Settings saved ✨', { autoClose: 3000, toastId: 'settings' })}
+        saveToast={() => toast.success('Settings saved ✨', { position: 'top-center', autoClose: 3000, toastId: 'settings' })}
       />
 
       {/* Toaster */}
