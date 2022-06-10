@@ -1,6 +1,14 @@
 
 import { setCookie, getCookie } from './cookie'
 
+const baudrates = [
+    115200,
+    230400,
+    460800,
+    921600,
+    //3000000,
+]
+
 const loadSettings = () => {
     let settings = {
         baudRate: 115200,
@@ -24,4 +32,4 @@ const saveSettings = (newSettings) => {
     setCookie('settings', JSON.stringify(newSettings), 365)
 }
 
-export { loadSettings, saveSettings }
+export { loadSettings, saveSettings, baudrates }

@@ -15,7 +15,7 @@ import Settings from './components/Settings'
 import Footer from './components/Footer'
 
 import { connectESP, formatMacAddr } from './lib/esp'
-import { loadSettings, saveSettings } from './lib/settings'
+import { loadSettings } from './lib/settings'
 
 function App() {
   const [connected, setConnected] = React.useState(false) // Connection status
@@ -209,10 +209,9 @@ function App() {
       <Settings
         open={settingsOpen}
         close={() => setSettingsOpen(false)}
-        save={(newSettings) => { saveSettings(newSettings); setSettings(newSettings) }}
+        setSettings={setSettings}
         settings={settings}
-        openPort={connected}
-        saveToast={() => toast.success('Settings saved ✨', { position: 'top-center', autoClose: 3000, toastId: 'settings' })}
+        connected={connected}
       />
 
       {/* Toaster */}

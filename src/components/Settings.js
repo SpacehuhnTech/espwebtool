@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { toast } from 'react-toastify'
+
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -12,37 +14,25 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 
-const baudrates = [
-    115200,
-    230400,
-    460800,
-    921600,
-    //3000000,
-]
-
-const formElementCSS = {
-    marginTop: 1,
-    minWidth: '10em',
-}
+import { baudrates, saveSettings } from '../lib/settings'
 
 const Settings = (props) => {
     const [baudRate, setBaudRate] = React.useState(props.settings.baudRate)
 
     const cancel = () => {
         setBaudRate(props.settings.baudRate)
-        
         props.close()
     }
 
     const reset = () => {
-        if(!props.openPort) setBaudRate(115200)
+        if (!props.connected) setBaudRate(115200)
     }
 
     const save = () => {
-        props.save({baudRate: baudRate})
+        saveSettings({ baudRate: baudRate })
+        props.setSettings({ baudRate: baudRate })
         props.close()
-
-        props.saveToast()
+        toast.success('Settings saved ✨', { position: 'top-center', autoClose: 3000, toastId: 'settings' })
     }
 
     return (
@@ -54,13 +44,13 @@ const Settings = (props) => {
                     Serial Connection
                 </DialogContentText>
 
-                <FormControl variant='filled' fullWidth sx={formElementCSS}>
-                    <InputLabel>Baud Rate {props.openPort && '(Requires Reconnect)'}</InputLabel>
+                <FormControl variant='filled' fullWidth sx={{ mt: 1, minWidth: '10em' }}>
+                    <InputLabel>Baud Rate {props.connected && '(Requires Reconnect)'}</InputLabel>
                     <Select
                         value={baudRate}
                         onChange={(e) => setBaudRate(e.target.value)}
                         label='baudrate'
-                        disabled={props.openPort}
+                        disabled={props.connected}
                     >
                         {baudrates.map(baud =>
                             <MenuItem value={baud} key={baud}>{baud} baud</MenuItem>
@@ -82,9 +72,8 @@ Settings.propTypes = {
     open: PropTypes.bool,
     close: PropTypes.func,
     settings: PropTypes.object,
-    save: PropTypes.func,
-    openPort: PropTypes.bool,
-    saveToast: PropTypes.func,
+    setSettings: PropTypes.func,
+    connected: PropTypes.bool,
 }
 
 export default Settings
