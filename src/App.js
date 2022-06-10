@@ -14,70 +14,23 @@ import Buttons from './components/Buttons'
 import Settings from './components/Settings'
 import Footer from './components/Footer'
 
-import { setCookie, getCookie } from './modules/cookie.js'
-
-const connectESP = async (t) => {
-  const esploaderMod = await window.esptoolPackage
-
-  const e = await navigator.serial.requestPort()
-  return t.log("Connecting..."), await e.open({ baudRate: t.baudRate }), t.log("Connected successfully."), new esploaderMod.ESPLoader(e, t)
-}
-
-const loadSettings = () => {
-  let settings = {
-    baudRate: 115200,
-  }
-
-  const cookieValue = getCookie('settings')
-
-  try {
-    const cookieJSON = JSON.parse(cookieValue)
-
-    if ('baudRate' in cookieJSON) settings.baudRate = cookieJSON.baudRate
-  } catch (e) {
-    console.error(e)
-  }
-
-  //saveSettings(settings)
-  return settings
-}
-
-const formatMacAddr = (macAddr) => {
-  return macAddr.map((value) => value.toString(16).toUpperCase().padStart(2, '0')).join(':')
-}
+import { connectESP, formatMacAddr } from './lib/esp'
+import { loadSettings, saveSettings } from './lib/settings'
 
 function App() {
-  // Connection status
-  const [connected, setConnected] = React.useState(false)
+  const [connected, setConnected] = React.useState(false) // Connection status
+  const [output, setOutput] = React.useState({ time: new Date(), value: '' }) // Serial output
+  const [espStub, setEspStub] = React.useState(undefined) // ESP flasher stuff
+  const [uploads, setUploads] = React.useState([]) // Uploaded Files
+  const [settingsOpen, setSettingsOpen] = React.useState(false) // Settings Window
+  const [settings, setSettings] = React.useState(loadSettings()) // Settings
 
-  // Serial output
-  const [output, setOutput] = React.useState({ time: new Date(), value: '' })
-
-  // ESP flasher stuff
-  const [espStub, setEspStub] = React.useState(undefined)
-
-  // Uploaded Files
-  const [uploads, setUploads] = React.useState([])
-
-  // Settings Window
-  const [settingsOpen, setSettingsOpen] = React.useState(false)
-
-  // Settings
-  const [settings, setSettings] = React.useState(loadSettings())
-
-  const addLine = (msg) => {
+  // Add new message to output
+  const addOutput = (msg) => {
     setOutput({
       time: new Date(),
       value: `${msg}\n`,
     })
-  }
-
-  const saveSettings = (newSettings) => {
-    setSettings({
-      baudRate: newSettings.baudRate
-    })
-
-    setCookie('settings', JSON.stringify(newSettings), 365)
   }
 
   const clickConnect = async () => {
@@ -91,7 +44,7 @@ function App() {
     const esploader = await connectESP({
       log: (...args) => {
         //console.log(...args)
-        addLine(`${args[0]}`)
+        addOutput(`${args[0]}`)
       },
       debug: (...args) => console.debug(...args),
       error: (...args) => console.error(...args),
@@ -103,8 +56,8 @@ function App() {
 
       await esploader.initialize()
 
-      addLine(`Connected to ${esploader.chipName}`)
-      addLine(`MAC Address: ${formatMacAddr(esploader.macAddr())}`)
+      addOutput(`Connected to ${esploader.chipName}`)
+      addOutput(`MAC Address: ${formatMacAddr(esploader.macAddr())}`)
 
       const newEspStub = await esploader.runStub()
 
@@ -121,7 +74,7 @@ function App() {
         setConnected(false)
         setEspStub(undefined)
         toast.warning('Disconnected 💔', { position: 'top-center', autoClose: 3000, toastId: 'settings' })
-        addLine(`------------------------------------------------------------`)
+        addOutput(`------------------------------------------------------------`)
       })
       setEspStub(newEspStub)
     } catch (err) {
@@ -133,7 +86,7 @@ function App() {
 
       await esploader.disconnect()
       await esploader.port.close()
-      addLine(`${err}`)
+      addOutput(`${err}`)
     }
   }
 
@@ -143,14 +96,14 @@ function App() {
     ) {
       try {
         let stamp = Date.now()
-        addLine(`Start erasing`)
-        let interval = setInterval(() => addLine(`Erasing flash memory. Please wait...`), 3000)
+        addOutput(`Start erasing`)
+        let interval = setInterval(() => addOutput(`Erasing flash memory. Please wait...`), 3000)
         await espStub.eraseFlash()
-        addLine(`Finished. Took ${Date.now() - stamp}ms to erase.`)
+        addOutput(`Finished. Took ${Date.now() - stamp}ms to erase.`)
         clearInterval(interval)
       } catch (e) {
-        addLine(`ERROR!`)
-        addLine(`${e}`)
+        addOutput(`ERROR!`)
+        addOutput(`${e}`)
         console.error(e)
       }
     }
@@ -179,7 +132,7 @@ function App() {
     }
 
     for (const file of uploads) {
-      toast(`Uploading ${file.fileName.substring(0,28)}...`, { position: 'top-center', progress: 0, toastId: 'upload' })
+      toast(`Uploading ${file.fileName.substring(0, 28)}...`, { position: 'top-center', progress: 0, toastId: 'upload' })
 
       try {
         const contents = await toArrayBuffer(file.obj)
@@ -192,17 +145,17 @@ function App() {
 
             toast.update('upload', { progress: progress })
 
-            addLine(`Flashing... ${percentage}%`)
+            addOutput(`Flashing... ${percentage}%`)
           },
           0,//parseInt(file.offset, 16)
         )
 
         await sleep(100)
-        addLine(`Done!`)
-        addLine(`To run the new firmware please reset your device.`)
+        addOutput(`Done!`)
+        addOutput(`To run the new firmware please reset your device.`)
       } catch (e) {
-        addLine(`ERROR!`)
-        addLine(`${e}`)
+        addOutput(`ERROR!`)
+        addOutput(`${e}`)
         console.error(e)
       }
     }
@@ -256,7 +209,7 @@ function App() {
       <Settings
         open={settingsOpen}
         close={() => setSettingsOpen(false)}
-        save={saveSettings}
+        save={(newSettings) => { saveSettings(newSettings); setSettings(newSettings) }}
         settings={settings}
         openPort={connected}
         saveToast={() => toast.success('Settings saved ✨', { position: 'top-center', autoClose: 3000, toastId: 'settings' })}
