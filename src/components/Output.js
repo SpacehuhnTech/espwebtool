@@ -2,20 +2,24 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import Box from '@mui/material/Box'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+
+import { setCookie, getCookie } from '../modules/cookie.js'
 
 const preCSS = {
     position: 'relative',
     padding: '0',
     margin: '0',
+    width: 'calc(100vw - 1rem)',
+    maxWidth: '40rem',
 }
 
 const boxCSS = {
-    width: 'calc(100vw - 1rem)',
-    maxWidth: '40rem',
-
-    //height: '10rem',
+    width: '100%',
+    height: '10rem',
     //minHeight: '5rem',
-    maxHeight: '20rem',
+    //maxHeight: '10rem',
 
     background: '#eee',
     borderRadius: '4px',
@@ -57,10 +61,22 @@ const codeCSS = {
     fontWeight: 300,
 }
 
+const loadOpen = () => {
+    const cookieValue = getCookie('output')
+    return cookieValue ? cookieValue === 'true' : false
+}
+
 const Output = (props) => {
     // Currently receieved string & list of previous receieved lines
     const received = React.useRef('')
     const [lines, setLines] = React.useState([])
+
+    const [visible, setVisible] = React.useState(loadOpen())
+
+    const openOutput = (value) => {
+        setVisible(value)
+        setCookie('output', value)
+    }
 
     React.useEffect(
         () => {
@@ -84,23 +100,24 @@ const Output = (props) => {
     )
 
     return (
-        <pre style={preCSS}>
+        <>
 
-            { /* Text */}
-            {lines.length > 0 &&
-                <Box sx={boxCSS}>
-                    <code style={codeCSS}>
-                        {lines.map((line, i) => (
-                            <span key={i}>
-                                {line}
-                                <br />
-                            </span>
-                        ))}
-                    </code>
-                </Box>
-            }
-
-        </pre>
+            <pre style={preCSS}>
+                <FormControlLabel control={<Checkbox checked={visible} onChange={e => openOutput(e.target.checked)} />} label="Show Output" />
+                {visible &&
+                    <Box sx={boxCSS}>
+                        <code style={codeCSS}>
+                            {lines.map((line, i) => (
+                                <span key={i}>
+                                    {line}
+                                    <br />
+                                </span>
+                            ))}
+                        </code>
+                    </Box>
+                }
+            </pre>
+        </>
     )
 }
 
