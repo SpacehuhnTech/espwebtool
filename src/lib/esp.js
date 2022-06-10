@@ -10,4 +10,8 @@ const formatMacAddr = (macAddr) => {
     return macAddr.map((value) => value.toString(16).toUpperCase().padStart(2, '0')).join(':')
 }
 
-export { connectESP, formatMacAddr }
+const sleep = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+export { connectESP, formatMacAddr, sleep }

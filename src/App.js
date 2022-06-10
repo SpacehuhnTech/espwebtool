@@ -14,11 +14,12 @@ import Buttons from './components/Buttons'
 import Settings from './components/Settings'
 import Footer from './components/Footer'
 
-import { connectESP, formatMacAddr } from './lib/esp'
+import { connectESP, formatMacAddr, sleep } from './lib/esp'
 import { loadSettings } from './lib/settings'
 
 function App() {
   const [connected, setConnected] = React.useState(false) // Connection status
+  const [connecting, setConnecting] = React.useState(false)
   const [output, setOutput] = React.useState({ time: new Date(), value: '' }) // Serial output
   const [espStub, setEspStub] = React.useState(undefined) // ESP flasher stuff
   const [uploads, setUploads] = React.useState([]) // Uploaded Files
@@ -33,6 +34,7 @@ function App() {
     })
   }
 
+  // Connect to ESP & init flasher stuff
   const clickConnect = async () => {
     if (espStub) {
       await espStub.disconnect()
@@ -42,17 +44,15 @@ function App() {
     }
 
     const esploader = await connectESP({
-      log: (...args) => {
-        //console.log(...args)
-        addOutput(`${args[0]}`)
-      },
+      log: (...args) => addOutput(`${args[0]}`),
       debug: (...args) => console.debug(...args),
       error: (...args) => console.error(...args),
       baudRate: parseInt(settings.baudRate),
     })
 
     try {
-      toast.info("Connecting...", { position: 'top-center', autoClose: false, toastId: 'connecting' })
+      toast.info('Connecting...', { position: 'top-center', autoClose: false, toastId: 'connecting' })
+      setConnecting(true)
 
       await esploader.initialize()
 
@@ -87,33 +87,34 @@ function App() {
       await esploader.disconnect()
       await esploader.port.close()
       addOutput(`${err}`)
+    } finally {
+      setConnecting(false)
     }
   }
 
+  // Erase firmware on ESP
   const clickErase = async () => {
     if (
       window.confirm('This will erase the entire flash. Click OK to continue.')
     ) {
       try {
-        let stamp = Date.now()
+        const stamp = Date.now()
+
         addOutput(`Start erasing`)
-        let interval = setInterval(() => addOutput(`Erasing flash memory. Please wait...`), 3000)
+        const interval = setInterval(() => addOutput(`Erasing flash memory. Please wait...`), 3000)
+
         await espStub.eraseFlash()
-        addOutput(`Finished. Took ${Date.now() - stamp}ms to erase.`)
+
         clearInterval(interval)
+        addOutput(`Finished. Took ${Date.now() - stamp}ms to erase.`)
       } catch (e) {
-        addOutput(`ERROR!`)
-        addOutput(`${e}`)
+        addOutput(`ERROR!\n${e}`)
         console.error(e)
       }
     }
-
   }
 
-  const sleep = (ms) => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
+  // Flash Firmware
   const clickProgram = async () => {
     const toArrayBuffer = (inputFile) => {
       const reader = new FileReader()
@@ -121,7 +122,7 @@ function App() {
       return new Promise((resolve, reject) => {
         reader.onerror = () => {
           reader.abort();
-          reject(new DOMException("Problem parsing input file."));
+          reject(new DOMException('Problem parsing input file.'));
         }
 
         reader.onload = () => {
@@ -151,51 +152,48 @@ function App() {
         )
 
         await sleep(100)
-        addOutput(`Done!`)
-        addOutput(`To run the new firmware please reset your device.`)
       } catch (e) {
         addOutput(`ERROR!`)
         addOutput(`${e}`)
         console.error(e)
       }
     }
+    addOutput(`Done!`)
+    addOutput(`To run the new firmware please reset your device.`)
 
     toast.success('Done! Reset ESP to run new firmware.', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
   }
 
-
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box>
       <Header sx={{ mb: '1rem' }} />
 
-      <Grid container direction='column' alignItems='center' spacing={1}>
+      <Grid container spacing={1} direction='column' justifyContent='center' alignItems='center' sx={{minHeight: 'calc(100vh - 116px)'}}>
 
-        {/* Home & FileUpload Page */}
-        <Grid item xs={12}>
-          {connected ?
-            <FileList
-              uploads={uploads}
-              setUploads={setUploads}
-            />
-            :
+        {/* Home Page */}
+        {!connected && !connecting &&
+          <Grid item>
             <Home
               connect={clickConnect}
               supported={() => true}
               openSettings={() => setSettingsOpen(true)}
             />
-          }
-        </Grid>
+          </Grid>
+        }
 
-        {/* Serial Output */}
-        <Grid item xs={12}>
-          <Output
-            received={output}
-          />
-        </Grid>
+        {/* FileUpload Page */}
+        {connected &&
+          <Grid item>
+            <FileList
+              uploads={uploads}
+              setUploads={setUploads}
+            />
+          </Grid>
+        }
 
         {/* Erase & Program Buttons */}
         {connected &&
-          <Grid item xs={12} sx={{ my: '1rem' }}>
+          <Grid item sx={{ my: '1rem' }}>
             <Buttons
               erase={() => clickErase()}
               program={() => clickProgram()}
@@ -203,6 +201,11 @@ function App() {
             />
           </Grid>
         }
+
+        {/* Serial Output */}
+        <Grid item>
+          <Output received={output} />
+        </Grid>
       </Grid>
 
       {/* Settings Window */}
