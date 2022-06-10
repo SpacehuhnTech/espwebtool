@@ -6,6 +6,8 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import Button from '@mui/material/Button'
 
 import { setCookie, getCookie } from '../lib/cookie.js'
 import styles from './Output.module.css'
@@ -51,16 +53,30 @@ const Output = (props) => {
 
     return (
         <pre className={styles.pre}>
+            <>
+                { /* Toggle */}
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={visible}
+                            onChange={e => openOutput(e.target.checked)}
+                            icon={<ChevronRightIcon />}
+                            checkedIcon={<KeyboardArrowDownIcon />}
+                        />
+                    }
+                    label="Output"
 
-            { /* Toggle */}
-            <FormControlLabel control={
-                <Checkbox
-                    checked={visible}
-                    onChange={e => openOutput(e.target.checked)}
-                    icon={<ChevronRightIcon />}
-                    checkedIcon={<KeyboardArrowDownIcon />}
                 />
-            } label="Output" />
+
+                { /* Button(s) */}
+                <Button
+                    endIcon={<OpenInNewIcon />}
+                    sx={{ float: 'right' }}
+                    href='https://serial.huhn.me/'
+                >
+                    Terminal
+                </Button>
+            </>
 
             { /* Actual Output */}
             {visible &&
