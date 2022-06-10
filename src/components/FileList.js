@@ -34,6 +34,11 @@ const FileList = (props) => {
         props.setUploads(newUploads)
     }
 
+    const onlyHex = (e) => {
+        const re = /[0-9a-fA-F]+/g
+        if (!re.test(e.key)) e.preventDefault()
+    }
+
     return (
         <Box textAlign='center'>
             { /* File List */}
@@ -51,9 +56,9 @@ const FileList = (props) => {
                             key={i}
                             label='0x'
                             variant='outlined'
-                            type='number'
                             size='small'
                             value={file.offset}
+                            onKeyDown={onlyHex}
                             onChange={(e) => setOffset(i, e.target.value)}
                         />)}
                 </Grid>
@@ -105,6 +110,7 @@ const FileList = (props) => {
 FileList.propTypes = {
     uploads: PropTypes.array,
     setUploads: PropTypes.func,
+    chipName: PropTypes.string,
 }
 
 export default FileList

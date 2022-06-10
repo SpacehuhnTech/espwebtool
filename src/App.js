@@ -149,7 +149,7 @@ function App() {
 
             addOutput(`Flashing... ${percentage}%`)
           },
-          0,//parseInt(file.offset, 16)
+          parseInt(file.offset, 16)
         )
 
         await sleep(100)
