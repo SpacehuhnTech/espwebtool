@@ -1,0 +1,23 @@
+.box {
+    width: calc(100vw - 3rem);
+    max-Width: 40rem;
+}
+
+.grid {
+    margin-bottom: 1rem;
+}
+
+.fileItem {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fileName {
+    line-height: 40px;
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

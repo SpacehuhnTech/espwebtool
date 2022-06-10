@@ -15,7 +15,7 @@ import Buttons from './components/Buttons'
 import Settings from './components/Settings'
 import Footer from './components/Footer'
 
-import { connectESP, formatMacAddr, sleep } from './lib/esp'
+import { connectESP, formatMacAddr, sleep, loadFiles } from './lib/esp'
 import { loadSettings } from './lib/settings'
 
 function App() {
@@ -77,7 +77,9 @@ function App() {
         toast.warning('Disconnected 💔', { position: 'top-center', autoClose: 3000, toastId: 'settings' })
         addOutput(`------------------------------------------------------------`)
       })
+
       setEspStub(newEspStub)
+      setUploads(loadFiles(esploader.chipName))
     } catch (err) {
       toast.update('connecting', {
         render: 'Encountered error 🙁',
@@ -204,7 +206,7 @@ function App() {
 
         {/* Erase & Program Buttons */}
         {connected &&
-          <Grid item sx={{ my: '2rem' }}>
+          <Grid item>
             <Buttons
               erase={() => clickErase()}
               program={() => clickProgram()}

@@ -8,15 +8,28 @@ import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import DeleteIcon from '@mui/icons-material/Delete'
 
+import styles from './FileList.module.css'
+
 const FileList = (props) => {
-    const uploadFile = (e) => {
+    const addFile = () => {
         props.setUploads([...props.uploads, {
-            offset: 0,
+            offset: 0
+        }])
+    }
+
+    const uploadFile = (e, i) => {
+        const newUploads = [...props.uploads]
+
+        newUploads[i] = {
+            ...newUploads[i],
             fileName: e.target.files[0].name,
             obj: e.target.files[0],
-        }])
+        }
+
+        props.setUploads(newUploads)
     }
 
     const setOffset = (index, newOffset) => {
@@ -40,69 +53,69 @@ const FileList = (props) => {
     }
 
     return (
-        <Box textAlign='center'>
+        <Box textAlign='center' className={styles.box}>
             { /* File List */}
-            <Grid container spacing={.5}
-                sx={{
-                    width: 'calc(100vw - 3rem)',
-                    maxWidth: '40rem',
-                    mb: '1rem',
-                }}>
+            <Grid container spacing={.5} className={styles.grid} direction="row" justifyContent="space-around" alignItems="center">
 
                 {/* Offset */}
                 <Grid item xs={2}>
                     {props.uploads.map((file, i) =>
-                        <TextField
-                            key={i}
-                            label='0x'
-                            variant='outlined'
-                            size='small'
-                            value={file.offset}
-                            onKeyDown={onlyHex}
-                            onChange={(e) => setOffset(i, e.target.value)}
-                        />)}
+                        <div key={i} className={styles.fileItem}>
+                            <TextField
+                                label='0x'
+                                variant='outlined'
+                                size='small'
+                                value={file.offset}
+                                onKeyDown={onlyHex}
+                                onChange={(e) => setOffset(i, e.target.value)}
+                            />
+                        </div>
+                    )}
                 </Grid>
 
                 {/* File Name */}
                 <Grid item xs={9}>
                     {props.uploads.map((file, i) =>
-                        <Typography
-                            key={i}
-                            sx={{
-                                lineHeight: '40px',
-                                textAlign: 'center',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                whiteSpace: 'nowrap',
-                            }}>
-                            {file.fileName}
-                        </Typography>
+                        <div key={i} className={styles.fileItem}>
+                            {file.fileName ?
+                                <Typography className={styles.fileName}>
+                                    {file.fileName}
+                                </Typography>
+                                :
+                                <Button variant='outlined' color='primary' component='label'>
+                                    Select <DriveFolderUploadIcon style={{ paddingLeft: '.2em' }} />
+                                    <input
+                                        type='file'
+                                        hidden
+                                        onChange={(e) => uploadFile(e, i)}
+                                    />
+                                </Button>
+                            }
+                        </div>
                     )}
                 </Grid>
 
                 {/* Delete */}
                 <Grid item xs={1}>
                     {props.uploads.map((file, i) =>
-                        <IconButton
-                            key={i}
-                            color='error'
-                            onClick={() => deleteFile(i)}
-                        >
-                            <DeleteIcon />
-                        </IconButton>
+                        <div key={i} className={styles.fileItem}>
+                            <IconButton
+                                color='error'
+                                onClick={() => deleteFile(i)}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </div>
                     )}
                 </Grid>
-            </Grid>
 
-            { /* Upload new File Button */}
-            <Button variant='outlined' color='primary' component='label' size='large'>
-                Add File <DriveFolderUploadIcon style={{ paddingLeft: '.2em' }} />
-                <input
-                    type='file'
-                    hidden
-                    onChange={uploadFile}
-                />
-            </Button>
+                <Grid item xs={12} sx={{ textAlign: 'right' }}>
+                    { /* Upload new File Button */}
+                    <Button color='primary' component='label' size='large' onClick={addFile}>
+                        Add <AddBoxIcon style={{ paddingLeft: '.2em' }} />
+                    </Button>
+                </Grid>
+            </Grid>
         </Box>
     )
 }

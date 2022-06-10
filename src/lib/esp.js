@@ -12,6 +12,23 @@ const formatMacAddr = (macAddr) => {
 
 const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+}
 
-export { connectESP, formatMacAddr, sleep }
+const loadFiles = (chipName) => {
+    console.log(chipName)
+
+    if (chipName.includes('ESP32')) {
+        return [
+            { offset: '1000' },
+            { offset: '8000' },
+            { offset: 'E000' },
+            { offset: '10000' }
+        ]
+    } else {
+        return [
+            { offset: 0 }
+        ]
+    }
+}
+
+export { connectESP, formatMacAddr, sleep, loadFiles }
