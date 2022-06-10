@@ -41,6 +41,7 @@ const FileList = (props) => {
                 sx={{
                     width: 'calc(100vw - 3rem)',
                     maxWidth: '40rem',
+                    mb: '1rem',
                 }}>
 
                 {/* Offset */}
@@ -52,7 +53,7 @@ const FileList = (props) => {
                             variant='outlined'
                             type='number'
                             size='small'
-                            value={file.offset > 0 ? file.offset : ''}
+                            value={file.offset}
                             onChange={(e) => setOffset(i, e.target.value)}
                         />)}
                 </Grid>
@@ -89,7 +90,7 @@ const FileList = (props) => {
             </Grid>
 
             { /* Upload new File Button */}
-            <Button component='label' color='primary'>
+            <Button variant='outlined' color='primary' component='label' size='large'>
                 Add File <DriveFolderUploadIcon style={{ paddingLeft: '.2em' }} />
                 <input
                     type='file'

@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 import Header from './components/Header'
 import Home from './components/Home'
@@ -20,7 +21,7 @@ import { loadSettings } from './lib/settings'
 function App() {
   const [connected, setConnected] = React.useState(false) // Connection status
   const [connecting, setConnecting] = React.useState(false)
-  const [output, setOutput] = React.useState({ time: new Date(), value: '' }) // Serial output
+  const [output, setOutput] = React.useState({ time: new Date(), value: 'Click Connect to start\n' }) // Serial output
   const [espStub, setEspStub] = React.useState(undefined) // ESP flasher stuff
   const [uploads, setUploads] = React.useState([]) // Uploaded Files
   const [settingsOpen, setSettingsOpen] = React.useState(false) // Settings Window
@@ -168,7 +169,7 @@ function App() {
     <Box>
       <Header sx={{ mb: '1rem' }} />
 
-      <Grid container spacing={1} direction='column' justifyContent='center' alignItems='center' sx={{minHeight: 'calc(100vh - 116px)'}}>
+      <Grid container spacing={1} direction='column' justifyContent='center' alignItems='center' sx={{ minHeight: 'calc(100vh - 116px)' }}>
 
         {/* Home Page */}
         {!connected && !connecting &&
@@ -181,19 +182,29 @@ function App() {
           </Grid>
         }
 
+        {/* Home Page */}
+        {!connected && connecting &&
+          <Grid item>
+            <Typography variant='h3' component='h2' sx={{ color: '#aaa' }}>
+              Connecting...
+            </Typography>
+          </Grid>
+        }
+
         {/* FileUpload Page */}
         {connected &&
           <Grid item>
             <FileList
               uploads={uploads}
               setUploads={setUploads}
+              chipName={espStub ? espStub.chipName : 'ESP8266'}
             />
           </Grid>
         }
 
         {/* Erase & Program Buttons */}
         {connected &&
-          <Grid item sx={{ my: '1rem' }}>
+          <Grid item sx={{ my: '2rem' }}>
             <Buttons
               erase={() => clickErase()}
               program={() => clickProgram()}

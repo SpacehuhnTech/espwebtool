@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import Box from '@mui/material/Box'
@@ -12,10 +12,10 @@ import styles from './Output.module.css'
 
 const Output = (props) => {
     // Currently receieved string & list of previous receieved lines
-    const received = React.useRef('')
-    const [lines, setLines] = React.useState([])
+    const received = useRef('')
+    const [lines, setLines] = useState([])
 
-    React.useEffect(
+    useEffect(
         () => {
             const str = `${received.current}${props.received.value}`
             const lines = str.split('\n')
