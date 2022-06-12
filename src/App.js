@@ -126,6 +126,8 @@ function App() {
     setConfirmProgram(false)
     setFlashing(true)
 
+    let success = false
+
     const toArrayBuffer = (inputFile) => {
       const reader = new FileReader()
 
@@ -143,7 +145,8 @@ function App() {
     }
 
     for (const file of uploads) {
-      if(!file.fileName || !file.obj) continue
+      if (!file.fileName || !file.obj) continue
+      success = true
 
       toast(`Uploading ${file.fileName.substring(0, 28)}...`, { position: 'top-center', progress: 0, toastId: 'upload' })
 
@@ -170,10 +173,18 @@ function App() {
         console.error(e)
       }
     }
-    addOutput(`Done!`)
-    addOutput(`To run the new firmware please reset your device.`)
 
-    toast.success('Done! Reset ESP to run new firmware.', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
+    if (success) {
+      addOutput(`Done!`)
+      addOutput(`To run the new firmware please reset your device.`)
+
+      toast.success('Done! Reset ESP to run new firmware.', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
+    } else {
+      addOutput(`Please upload a .bin file`)
+
+      toast.info('Please upload a .bin file', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
+    }
+
     setFlashing(false)
   }
 
