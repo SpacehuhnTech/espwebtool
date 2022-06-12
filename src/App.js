@@ -188,9 +188,9 @@ function App() {
 
       toast.success('Done! Reset ESP to run new firmware.', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
     } else {
-      addOutput(`Please upload a .bin file`)
+      addOutput(`Please add a .bin file`)
 
-      toast.info('Please upload a .bin file', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
+      toast.info('Please add a .bin file', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
     }
 
     setFlashing(false)

@@ -19,7 +19,7 @@ const ConfirmWindow = (props) => {
 
             <DialogActions>
                 <Button onClick={props.onCancel} color='secondary'>Cancel</Button>
-                <Button onClick={props.onOk} color='secondary'>Continue</Button>
+                <Button onClick={props.onOk} color='primary'>Continue</Button>
             </DialogActions>
         </Dialog>
     )

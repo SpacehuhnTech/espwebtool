@@ -76,7 +76,7 @@ const FileList = (props) => {
             {props.uploads.map((file, i) =>
                 <Grid container spacing={0} className={styles.fileItem} key={i}>
                     {/* Offset */}
-                    <Grid item xs={2}>
+                    <Grid item xs={2} className={styles.fileOffset}>
                         <TextField
                             label='0x'
                             variant='outlined'
@@ -84,7 +84,6 @@ const FileList = (props) => {
                             value={file.offset}
                             onKeyDown={onlyHex}
                             onChange={(e) => setOffset(i, e.target.value)}
-                            className={styles.fileOffset}
                         />
                     </Grid>
 
