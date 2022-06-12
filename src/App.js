@@ -105,22 +105,28 @@ function App() {
   const erase = async () => {
     setConfirmErase(false)
     setFlashing(true)
+    toast(`Erasing flash memory. Please wait...`, { position: 'top-center', toastId: 'erase', autoClose: false })
 
     try {
       const stamp = Date.now()
 
       addOutput(`Start erasing`)
-      const interval = setInterval(() => addOutput(`Erasing flash memory. Please wait...`), 3000)
+      const interval = setInterval(() => {
+        addOutput(`Erasing flash memory. Please wait...`)
+      }, 3000)
 
       await espStub.eraseFlash()
 
       clearInterval(interval)
       addOutput(`Finished. Took ${Date.now() - stamp}ms to erase.`)
+      toast.update('erase', { render: 'Finished erasing memory.', type: toast.TYPE.INFO, autoClose: 3000 })
     } catch (e) {
       addOutput(`ERROR!\n${e}`)
+      toast.update('erase', { render: `ERROR!\n${e}`, type: toast.TYPE.ERROR, autoClose: 3000 })
       console.error(e)
+    } finally {
+      setFlashing(false)
     }
-    setFlashing(false)
   }
 
   // Flash Firmware
