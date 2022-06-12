@@ -8,8 +8,9 @@ import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import AddBoxIcon from '@mui/icons-material/AddBox'
 import DeleteIcon from '@mui/icons-material/Delete'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
 import styles from './FileList.module.css'
 
@@ -42,8 +43,19 @@ const FileList = (props) => {
     }
 
     const deleteFile = (index) => {
+        const file = props.uploads[index]
         const newUploads = [...props.uploads]
-        newUploads.splice(index, 1)
+
+        if (file.fileName) {
+            newUploads[index] = {
+                ...newUploads[index],
+                fileName: undefined,
+                obj: undefined,
+            }
+        } else {
+            newUploads.splice(index, 1)
+        }
+
         props.setUploads(newUploads)
     }
 
@@ -93,7 +105,11 @@ const FileList = (props) => {
                             color='error'
                             onClick={() => deleteFile(i)}
                         >
-                            <DeleteIcon />
+                            {file.fileName ?
+                                <HighlightOffIcon />
+                                :
+                                <DeleteIcon />
+                            }
                         </IconButton>
                     </Grid>
                 </Grid>
