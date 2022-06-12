@@ -4,6 +4,7 @@
     margin: 0;
     width: calc(100vw - 1rem);
     max-width: 40rem;
+    min-width: 25rem;
 }
 
 .box {

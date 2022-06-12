@@ -84,7 +84,7 @@ const FileList = (props) => {
                             value={file.offset}
                             onKeyDown={onlyHex}
                             onChange={(e) => setOffset(i, e.target.value)}
-                            sx={{ pl: .5 }}
+                            className={styles.fileOffset}
                         />
                     </Grid>
 

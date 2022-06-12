@@ -197,10 +197,10 @@ function App() {
   }
 
   return (
-    <Box>
+    <Box sx={{ minWidth: '25rem' }}>
       <Header sx={{ mb: '1rem' }} />
 
-      <Grid container spacing={1} direction='column' justifyContent='center' alignItems='center' sx={{ minHeight: 'calc(100vh - 116px)' }}>
+      <Grid container spacing={1} direction='column' justifyContent='space-around' alignItems='center' sx={{ minHeight: 'calc(100vh - 116px)' }}>
 
         {/* Home Page */}
         {!connected && !connecting &&

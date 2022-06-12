@@ -12,11 +12,6 @@ import EdgeIcon from '../icons/Edge'
 import OperaIcon from '../icons/Opera'
 import SettingsIcon from '@mui/icons-material/Settings'
 
-const gridCSS = {
-    //height: 'calc(100vh - 160px)',
-    //minHeight: '10em',
-}
-
 const Home = (props) => {
     return (
         <Grid
@@ -25,7 +20,6 @@ const Home = (props) => {
             direction='column'
             alignItems='center'
             justifyContent='center'
-            sx={gridCSS}
         >
             <Grid item xs={3}>
 

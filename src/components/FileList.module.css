@@ -1,6 +1,7 @@
 .box {
-    width: calc(100vw - 3rem);
-    max-Width: 40rem;
+    width: calc(100vw - 1rem);
+    max-width: 40rem;
+    min-width: 25rem;
 }
 
 .grid {
@@ -18,6 +19,10 @@
 
 .fileItem:nth-of-type(2n) {
     background: inherit;
+}
+
+.fileOffset {
+    margin-left: .5rem;
 }
 
 .fileName {
