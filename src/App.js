@@ -13,6 +13,7 @@ import FileList from './components/FileList'
 import Output from './components/Output'
 import Buttons from './components/Buttons'
 import Settings from './components/Settings'
+import ConfirmWindow from './components/ConfirmWindow'
 import Footer from './components/Footer'
 
 import { connectESP, formatMacAddr, sleep, loadFiles } from './lib/esp'
@@ -26,6 +27,8 @@ function App() {
   const [uploads, setUploads] = React.useState([]) // Uploaded Files
   const [settingsOpen, setSettingsOpen] = React.useState(false) // Settings Window
   const [settings, setSettings] = React.useState(loadSettings()) // Settings
+  const [confirmErase, setConfirmErase] = React.useState(false) // Confirm Erase Window
+  const [confirmProgram, setConfirmProgram] = React.useState(false) // Confirm Flash Window
 
   // Add new message to output
   const addOutput = (msg) => {
@@ -96,29 +99,29 @@ function App() {
   }
 
   // Erase firmware on ESP
-  const clickErase = async () => {
-    if (
-      window.confirm('This will erase the entire flash. Click OK to continue.')
-    ) {
-      try {
-        const stamp = Date.now()
+  const erase = async () => {
+    setConfirmErase(false)
 
-        addOutput(`Start erasing`)
-        const interval = setInterval(() => addOutput(`Erasing flash memory. Please wait...`), 3000)
+    try {
+      const stamp = Date.now()
 
-        await espStub.eraseFlash()
+      addOutput(`Start erasing`)
+      const interval = setInterval(() => addOutput(`Erasing flash memory. Please wait...`), 3000)
 
-        clearInterval(interval)
-        addOutput(`Finished. Took ${Date.now() - stamp}ms to erase.`)
-      } catch (e) {
-        addOutput(`ERROR!\n${e}`)
-        console.error(e)
-      }
+      await espStub.eraseFlash()
+
+      clearInterval(interval)
+      addOutput(`Finished. Took ${Date.now() - stamp}ms to erase.`)
+    } catch (e) {
+      addOutput(`ERROR!\n${e}`)
+      console.error(e)
     }
   }
 
   // Flash Firmware
-  const clickProgram = async () => {
+  const program = async () => {
+    setConfirmProgram(false)
+
     const toArrayBuffer = (inputFile) => {
       const reader = new FileReader()
 
@@ -208,8 +211,8 @@ function App() {
         {connected &&
           <Grid item>
             <Buttons
-              erase={() => clickErase()}
-              program={() => clickProgram()}
+              erase={() => setConfirmErase(true)}
+              program={() => setConfirmProgram(true)}
               disabled={uploads.length === 0}
             />
           </Grid>
@@ -228,6 +231,22 @@ function App() {
         setSettings={setSettings}
         settings={settings}
         connected={connected}
+      />
+
+      {/* Confirm Erase Window */}
+      <ConfirmWindow
+        open={confirmErase}
+        text={'This will erase the memory of your ESP.'}
+        onOk={erase}
+        onCancel={() => setConfirmErase(false)}
+      />
+
+      {/* Confirm Flash/Program Window */}
+      <ConfirmWindow
+        open={confirmProgram}
+        text={'This will override the memory of your ESP.'}
+        onOk={program}
+        onCancel={() => setConfirmProgram(false)}
       />
 
       {/* Toaster */}
