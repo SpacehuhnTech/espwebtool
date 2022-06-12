@@ -11,14 +11,21 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import DeleteIcon from '@mui/icons-material/Delete'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import styles from './FileList.module.css'
+
+import { loadFiles } from '../lib/esp'
 
 const FileList = (props) => {
     const addFile = () => {
         props.setUploads([...props.uploads, {
             offset: 0
         }])
+    }
+
+    const reset = () => {
+        props.setUploads(loadFiles(props.chipName))
     }
 
     const uploadFile = (e, i) => {
@@ -88,8 +95,8 @@ const FileList = (props) => {
                                 {file.fileName}
                             </Typography>
                             :
-                            <Button variant='outlined' color='primary' component='label'>
-                                Select <DriveFolderUploadIcon style={{ pl: 2 }} />
+                            <Button variant='outlined' color='primary' component='label' endIcon={<DriveFolderUploadIcon />}>
+                                Select
                                 <input
                                     type='file'
                                     hidden
@@ -117,9 +124,14 @@ const FileList = (props) => {
 
             {/* Add File */}
             <Grid container spacing={.5}>
-                <Grid item xs={12} sx={{ textAlign: 'right' }}>
-                    <Button color='primary' component='label' size='large' onClick={addFile}>
-                        Add <AddBoxIcon style={{ paddingLeft: '.2em' }} />
+                <Grid item xs={6} sx={{ textAlign: 'left' }}>
+                    <Button color='error' component='label' size='large' onClick={reset} endIcon={<RestartAltIcon />}>
+                        Reset
+                    </Button>
+                </Grid>
+                <Grid item xs={6} sx={{ textAlign: 'right' }}>
+                    <Button color='primary' component='label' size='large' onClick={addFile} endIcon={<AddBoxIcon />}>
+                        Add
                     </Button>
                 </Grid>
             </Grid>

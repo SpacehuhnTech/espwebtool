@@ -30,6 +30,7 @@ function App() {
   const [confirmErase, setConfirmErase] = React.useState(false) // Confirm Erase Window
   const [confirmProgram, setConfirmProgram] = React.useState(false) // Confirm Flash Window
   const [flashing, setFlashing] = React.useState(false) // Enable/Disable buttons
+  const [chipName, setChipName] = React.useState('') // ESP8266 or ESP32
 
   // Add new message to output
   const addOutput = (msg) => {
@@ -84,6 +85,7 @@ function App() {
 
       setEspStub(newEspStub)
       setUploads(loadFiles(esploader.chipName))
+      setChipName(esploader.chipName)
     } catch (err) {
       toast.update('connecting', {
         render: 'Encountered error 🙁',
@@ -220,7 +222,7 @@ function App() {
             <FileList
               uploads={uploads}
               setUploads={setUploads}
-              chipName={espStub ? espStub.chipName : 'ESP8266'}
+              chipName={chipName}
             />
           </Grid>
         }

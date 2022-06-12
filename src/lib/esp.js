@@ -15,7 +15,7 @@ const sleep = (ms) => {
 }
 
 const loadFiles = (chipName) => {
-    console.log(chipName)
+    //console.log(chipName)
 
     if (chipName.includes('ESP32')) {
         return [
