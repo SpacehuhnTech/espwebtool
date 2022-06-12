@@ -29,6 +29,7 @@ function App() {
   const [settings, setSettings] = React.useState(loadSettings()) // Settings
   const [confirmErase, setConfirmErase] = React.useState(false) // Confirm Erase Window
   const [confirmProgram, setConfirmProgram] = React.useState(false) // Confirm Flash Window
+  const [flashing, setFlashing] = React.useState(false) // Enable/Disable buttons
 
   // Add new message to output
   const addOutput = (msg) => {
@@ -101,6 +102,7 @@ function App() {
   // Erase firmware on ESP
   const erase = async () => {
     setConfirmErase(false)
+    setFlashing(true)
 
     try {
       const stamp = Date.now()
@@ -116,11 +118,13 @@ function App() {
       addOutput(`ERROR!\n${e}`)
       console.error(e)
     }
+    setFlashing(false)
   }
 
   // Flash Firmware
   const program = async () => {
     setConfirmProgram(false)
+    setFlashing(true)
 
     const toArrayBuffer = (inputFile) => {
       const reader = new FileReader()
@@ -139,6 +143,8 @@ function App() {
     }
 
     for (const file of uploads) {
+      if(!file.fileName || !file.obj) continue
+
       toast(`Uploading ${file.fileName.substring(0, 28)}...`, { position: 'top-center', progress: 0, toastId: 'upload' })
 
       try {
@@ -168,6 +174,7 @@ function App() {
     addOutput(`To run the new firmware please reset your device.`)
 
     toast.success('Done! Reset ESP to run new firmware.', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
+    setFlashing(false)
   }
 
   return (
@@ -213,7 +220,7 @@ function App() {
             <Buttons
               erase={() => setConfirmErase(true)}
               program={() => setConfirmProgram(true)}
-              disabled={uploads.length === 0}
+              disabled={flashing}
             />
           </Grid>
         }
@@ -244,7 +251,7 @@ function App() {
       {/* Confirm Flash/Program Window */}
       <ConfirmWindow
         open={confirmProgram}
-        text={'This will override the memory of your ESP.'}
+        text={'Flashing new firmware will override the current firmware.'}
         onOk={program}
         onCancel={() => setConfirmProgram(false)}
       />
