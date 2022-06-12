@@ -68,14 +68,16 @@ const Output = (props) => {
 
                 />
 
-                { /* Button(s) */}
-                <Button
-                    endIcon={<OpenInNewIcon />}
-                    sx={{ float: 'right' }}
-                    href='https://serial.huhn.me/'
-                >
-                    Terminal
-                </Button>
+                { /* Button */}
+                {visible &&
+                    <Button
+                        endIcon={<OpenInNewIcon />}
+                        sx={{ float: 'right' }}
+                        href='https://serial.huhn.me/'
+                    >
+                        Terminal
+                    </Button>
+                }
             </>
 
             { /* Actual Output */}
