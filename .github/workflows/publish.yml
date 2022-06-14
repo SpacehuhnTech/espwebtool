@@ -17,10 +17,8 @@ jobs:
         run: |
           echo ${GITHUB_SHA::8}
           sed -i 's/dev/dev '"${GITHUB_SHA::8}"'/' src/version.js
-          sed -i 's/localhost/spacehuhn.github.io\/espwebtool/' src/version.js
-          sed -i 's/localhost/spacehuhn.github.io\/espwebtool/' package.json
-#         sed -i 's/localhost/esp.huhn.me/' src/version.js
-#         sed -i 's/localhost/esp.huhn.me/' package.json
+          sed -i 's/localhost/esp.huhn.me/' src/version.js
+          sed -i 's/localhost/esp.huhn.me/' package.json
       
       - name: Build
         run: npm run build
@@ -31,4 +29,4 @@ jobs:
           personal_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages  # default: gh-pages
           publish_dir: ./build
-#         cname: locale.huhn.me
+          cname: esp.huhn.me
