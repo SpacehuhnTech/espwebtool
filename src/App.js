@@ -19,7 +19,11 @@ import Footer from './components/Footer'
 import { connectESP, formatMacAddr, sleep, loadFiles } from './lib/esp'
 import { loadSettings } from './lib/settings'
 
-function App() {
+const serialSupport = () => {
+  return ('serial' in navigator)
+}
+
+const App = () => {
   const [connected, setConnected] = React.useState(false) // Connection status
   const [connecting, setConnecting] = React.useState(false)
   const [output, setOutput] = React.useState({ time: new Date(), value: 'Click Connect to start\n' }) // Serial output
@@ -207,7 +211,7 @@ function App() {
           <Grid item>
             <Home
               connect={clickConnect}
-              supported={() => true}
+              supported={serialSupport}
               openSettings={() => setSettingsOpen(true)}
             />
           </Grid>
@@ -245,9 +249,11 @@ function App() {
         }
 
         {/* Serial Output */}
-        <Grid item>
-          <Output received={output} />
-        </Grid>
+        {serialSupport() &&
+          <Grid item>
+            <Output received={output} />
+          </Grid>
+        }
       </Grid>
 
       {/* Settings Window */}
