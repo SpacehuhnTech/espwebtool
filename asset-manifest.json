@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/espwebtool/static/css/main.9dfc7f04.css",
-    "main.js": "/espwebtool/static/js/main.eb0d077a.js",
-    "index.html": "/espwebtool/index.html",
-    "main.9dfc7f04.css.map": "/espwebtool/static/css/main.9dfc7f04.css.map",
-    "main.eb0d077a.js.map": "/espwebtool/static/js/main.eb0d077a.js.map"
+    "main.css": "/static/css/main.9dfc7f04.css",
+    "main.js": "/static/js/main.15bea6e5.js",
+    "index.html": "/index.html",
+    "main.9dfc7f04.css.map": "/static/css/main.9dfc7f04.css.map",
+    "main.15bea6e5.js.map": "/static/js/main.15bea6e5.js.map"
   },
   "entrypoints": [
     "static/css/main.9dfc7f04.css",
-    "static/js/main.eb0d077a.js"
+    "static/js/main.15bea6e5.js"
   ]
 }
