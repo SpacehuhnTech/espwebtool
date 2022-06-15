@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -17,7 +17,7 @@ import ConfirmWindow from './components/ConfirmWindow'
 import Footer from './components/Footer'
 
 import { connectESP, formatMacAddr, sleep, loadFiles, supported } from './lib/esp'
-import { loadSettings } from './lib/settings'
+import { loadSettings, defaultSettings } from './lib/settings'
 
 const App = () => {
   const [connected, setConnected] = React.useState(false) // Connection status
@@ -26,11 +26,15 @@ const App = () => {
   const [espStub, setEspStub] = React.useState(undefined) // ESP flasher stuff
   const [uploads, setUploads] = React.useState([]) // Uploaded Files
   const [settingsOpen, setSettingsOpen] = React.useState(false) // Settings Window
-  const [settings, setSettings] = React.useState(loadSettings()) // Settings
+  const [settings, setSettings] = React.useState({...defaultSettings}) // Settings
   const [confirmErase, setConfirmErase] = React.useState(false) // Confirm Erase Window
   const [confirmProgram, setConfirmProgram] = React.useState(false) // Confirm Flash Window
   const [flashing, setFlashing] = React.useState(false) // Enable/Disable buttons
   const [chipName, setChipName] = React.useState('') // ESP8266 or ESP32
+
+  useEffect(() => {
+    setSettings(loadSettings())
+  }, [])
 
   // Add new message to output
   const addOutput = (msg) => {

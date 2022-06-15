@@ -9,10 +9,12 @@ const baudrates = [
     //3000000,
 ]
 
+const defaultSettings = {
+    baudRate: 115200,
+}
+
 const loadSettings = () => {
-    let settings = {
-        baudRate: 115200,
-    }
+    let settings = {...defaultSettings}
 
     const cookieValue = getCookie('settings')
 
@@ -21,10 +23,10 @@ const loadSettings = () => {
 
         if ('baudRate' in cookieJSON) settings.baudRate = cookieJSON.baudRate
     } catch (e) {
+        saveSettings(settings)
         console.error(e)
     }
 
-    //saveSettings(settings)
     return settings
 }
 
@@ -32,4 +34,4 @@ const saveSettings = (newSettings) => {
     setCookie('settings', JSON.stringify(newSettings), 365)
 }
 
-export { loadSettings, saveSettings, baudrates }
+export { loadSettings, saveSettings, baudrates, defaultSettings }
