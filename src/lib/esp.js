@@ -1,3 +1,5 @@
+import localforage from "localforage"
+
 const connectESP = async t => {
     const esploaderMod = await window.esptoolPackage;
     const e = await navigator.serial.requestPort();
@@ -14,7 +16,7 @@ const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const loadFiles = (chipName) => {
+const defaultFiles = (chipName) => {
     //console.log(chipName)
 
     if (chipName.includes('ESP32')) {
@@ -31,4 +33,23 @@ const loadFiles = (chipName) => {
     }
 }
 
-export { connectESP, formatMacAddr, sleep, loadFiles }
+const saveFiles = (newFiles) => {
+    localforage.setItem('uploads', newFiles)
+}
+
+const loadFiles = async (chipName) => {
+    const value = await localforage.getItem('uploads')
+
+    if (value) {
+        //console.log(value)
+        return value
+    }
+
+    return defaultFiles(chipName)
+}
+
+const supported = () => {
+    return ('serial' in navigator)
+}
+
+export { connectESP, formatMacAddr, sleep, defaultFiles, saveFiles, loadFiles, supported }

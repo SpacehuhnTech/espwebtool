@@ -15,7 +15,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import styles from './FileList.module.css'
 
-import { loadFiles } from '../lib/esp'
+import { defaultFiles, saveFiles } from '../lib/esp'
 
 const FileList = (props) => {
     const addFile = () => {
@@ -25,7 +25,10 @@ const FileList = (props) => {
     }
 
     const reset = () => {
-        props.setUploads(loadFiles(props.chipName))
+        const newUploads = defaultFiles(props.chipName)
+
+        saveFiles(newUploads)
+        props.setUploads(newUploads)
     }
 
     const uploadFile = (e, i) => {
@@ -37,6 +40,7 @@ const FileList = (props) => {
             obj: e.target.files[0],
         }
 
+        saveFiles(newUploads)
         props.setUploads(newUploads)
     }
 
@@ -46,6 +50,8 @@ const FileList = (props) => {
             ...props.uploads[index],
             offset: newOffset
         }
+
+        saveFiles(newUploads)
         props.setUploads(newUploads)
     }
 
@@ -63,6 +69,7 @@ const FileList = (props) => {
             newUploads.splice(index, 1)
         }
 
+        saveFiles(newUploads)
         props.setUploads(newUploads)
     }
 

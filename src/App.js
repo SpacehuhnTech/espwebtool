@@ -16,12 +16,8 @@ import Settings from './components/Settings'
 import ConfirmWindow from './components/ConfirmWindow'
 import Footer from './components/Footer'
 
-import { connectESP, formatMacAddr, sleep, loadFiles } from './lib/esp'
+import { connectESP, formatMacAddr, sleep, loadFiles, supported } from './lib/esp'
 import { loadSettings } from './lib/settings'
-
-const serialSupport = () => {
-  return ('serial' in navigator)
-}
 
 const App = () => {
   const [connected, setConnected] = React.useState(false) // Connection status
@@ -88,7 +84,7 @@ const App = () => {
       })
 
       setEspStub(newEspStub)
-      setUploads(loadFiles(esploader.chipName))
+      setUploads(await loadFiles(esploader.chipName))
       setChipName(esploader.chipName)
     } catch (err) {
       toast.update('connecting', {
@@ -211,7 +207,7 @@ const App = () => {
           <Grid item>
             <Home
               connect={clickConnect}
-              supported={serialSupport}
+              supported={supported}
               openSettings={() => setSettingsOpen(true)}
             />
           </Grid>
@@ -249,7 +245,7 @@ const App = () => {
         }
 
         {/* Serial Output */}
-        {serialSupport() &&
+        {supported() &&
           <Grid item>
             <Output received={output} />
           </Grid>
