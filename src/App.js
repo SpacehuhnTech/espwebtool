@@ -61,7 +61,17 @@ const App = () => {
     })
 
     try {
-      toast.info('Connecting...', { position: 'top-center', autoClose: false, toastId: 'connecting' })
+      toast.info('Connecting...', { 
+        position: 'top-center', 
+        autoClose: false, 
+        toastId: 'connecting' 
+      })
+      toast.update('connecting', {
+        render: 'Connecting...',
+        type: toast.TYPE.INFO,
+        autoClose: false
+      })
+
       setConnecting(true)
 
       await esploader.initialize()
