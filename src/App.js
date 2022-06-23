@@ -91,15 +91,18 @@ const App = () => {
       setUploads(await loadFiles(esploader.chipName))
       setChipName(esploader.chipName)
     } catch (err) {
+      const shortErrMsg = `${err}`.replace('Error: ','')
+
       toast.update('connecting', {
-        render: 'Encountered error 🙁',
+        render: shortErrMsg,
         type: toast.TYPE.ERROR,
         autoClose: 3000
       })
 
-      await esploader.disconnect()
-      await esploader.port.close()
       addOutput(`${err}`)
+
+      await esploader.port.close()
+      await esploader.disconnect()
     } finally {
       setConnecting(false)
     }
