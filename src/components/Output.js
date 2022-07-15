@@ -41,7 +41,7 @@ const Output = (props) => {
     // Output toggle Visibility
     const loadOpen = () => {
         const cookieValue = getCookie('output')
-        return cookieValue ? (cookieValue === 'true') : false
+        return cookieValue ? (cookieValue === 'true') : true
     }
 
     const openOutput = (value) => {
