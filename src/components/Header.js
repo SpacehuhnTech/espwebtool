@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import UploadIcon from '@mui/icons-material/Upload'
+import HelpIcon from '@mui/icons-material/Help'
 
 const Header = (props) => {
     return (
@@ -31,6 +32,16 @@ const Header = (props) => {
                 >
                     &nbsp;&nbsp;ESPWebTool
                 </Typography>
+
+                <Button
+                    //variant='contained'
+                    //color='success'
+                    sx={{ color: '#fff' }}
+                    href='https://blog.spacehuhn.com/espcomm'
+                    target='_blank'
+                    endIcon={<HelpIcon />}>
+                    Help
+                </Button>
 
                 <Button
                     //variant='contained'
