@@ -8,6 +8,12 @@ const Buttons = (props) => {
     return (
         <Grid container spacing={1} direction='row' justifyContent='space-between' alignItems='flex-start'>
             <Grid item>
+                <Button variant='outlined' color='warning' onClick={props.disconnect} disabled={props.disabled}>
+                    Disconnect
+                </Button>
+            </Grid>
+
+            <Grid item>
                 <Button variant='outlined' color='error' onClick={props.erase} disabled={props.disabled}>
                     Erase
                 </Button>
@@ -23,6 +29,7 @@ const Buttons = (props) => {
 }
 
 Buttons.propTypes = {
+    disconnect: PropTypes.func,
     erase: PropTypes.func,
     program: PropTypes.func,
     disabled: PropTypes.bool,

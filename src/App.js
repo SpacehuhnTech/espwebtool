@@ -44,14 +44,16 @@ const App = () => {
         })
     }
 
-    // Connect to ESP & init flasher stuff
-    const clickConnect = async () => {
+    const disconnect = async () => {
         if (espStub) {
             await espStub.transport.disconnect()
+            setConnected(false)
             setEspStub(undefined)
-            return
         }
+    }
 
+    // Connect to ESP & init flasher stuff
+    const clickConnect = async () => {
         let esploader
 
         try {
@@ -275,6 +277,7 @@ const App = () => {
                 {connected && (
                     <Grid item>
                         <Buttons
+                            disconnect={() => disconnect()}
                             erase={() => setConfirmErase(true)}
                             program={() => setConfirmProgram(true)}
                             disabled={flashing}
