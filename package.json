@@ -1,6 +1,6 @@
 {
   "name": "espwebtool",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "homepage": "https://localhost",
   "dependencies": {
@@ -14,7 +14,7 @@
     "localforage": "^1.10.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "5.0.1",
     "react-toastify": "^9.0.1",
     "web-vitals": "^2.1.4"
   },

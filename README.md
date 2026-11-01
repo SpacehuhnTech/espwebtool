@@ -15,7 +15,7 @@ And inspired by [esptool-js](https://github.com/espressif/esptool-js).
 git clone https://github.com/spacehuhntech/espwebtool
 cd espwebtool
 npm install
-npm run
+npm start
 ```
 
 ## License
