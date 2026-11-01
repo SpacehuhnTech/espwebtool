@@ -5,7 +5,6 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import UploadIcon from "@mui/icons-material/Upload";
 import HelpIcon from "@mui/icons-material/Help";
 
