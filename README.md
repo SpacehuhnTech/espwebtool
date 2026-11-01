@@ -6,8 +6,7 @@ Have a look [https://esptool.spacehuhn.com/](https://esptool.spacehuhn.com)
 
 ## Credits
 
-Based on [ESP Web Flasher](https://github.com/NabuCasa/esp-web-flasher)  
-And inspired by [esptool-js](https://github.com/espressif/esptool-js).
+Flashing is done with [esptool-js](https://github.com/espressif/esptool-js) by Espressif.
 
 ## Installation
 

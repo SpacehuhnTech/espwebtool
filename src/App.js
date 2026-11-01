@@ -16,7 +16,7 @@ import Settings from './components/Settings'
 import ConfirmWindow from './components/ConfirmWindow'
 import Footer from './components/Footer'
 
-import { connectESP, formatMacAddr, sleep, loadFiles, supported } from './lib/esp'
+import { connectESP, loadFiles, supported } from './lib/esp'
 import { loadSettings, defaultSettings } from './lib/settings'
 
 const App = () => {
@@ -47,8 +47,7 @@ const App = () => {
   // Connect to ESP & init flasher stuff
   const clickConnect = async () => {
     if (espStub) {
-      await espStub.disconnect()
-      await espStub.port.close()
+      await espStub.transport.disconnect()
       setEspStub(undefined)
       return
     }
@@ -68,20 +67,21 @@ const App = () => {
       })
 
       esploader = await connectESP({
-        log: (...args) => addOutput(`${args[0]}`),
-        debug: (...args) => console.debug(...args),
-        error: (...args) => console.error(...args),
         baudRate: parseInt(settings.baudRate),
+        terminal: {
+          clean: () => addOutput(''),
+          writeLine: (data) => addOutput(data),
+          write: () => {},
+        },
       })
 
       setConnecting(true)
 
-      await esploader.initialize()
+      // main() connects, prints chip info/MAC and uploads+runs the stub itself
+      const chipDescription = await esploader.main()
+      const connectedChipName = esploader.chip.CHIP_NAME
 
-      addOutput(`Connected to ${esploader.chipName}`)
-      addOutput(`MAC Address: ${formatMacAddr(esploader.macAddr())}`)
-
-      const newEspStub = await esploader.runStub()
+      addOutput(`Connected to ${chipDescription}`)
 
       setConnected(true)
       toast.update('connecting', {
@@ -90,18 +90,16 @@ const App = () => {
         autoClose: 3000
       })
 
-      //console.log(newEspStub)
-
-      newEspStub.port.addEventListener('disconnect', () => {
+      esploader.transport.setDeviceLostCallback(() => {
         setConnected(false)
         setEspStub(undefined)
         toast.warning('Disconnected 💔', { position: 'top-center', autoClose: 3000, toastId: 'settings' })
         addOutput(`------------------------------------------------------------`)
       })
 
-      setEspStub(newEspStub)
-      setUploads(await loadFiles(esploader.chipName))
-      setChipName(esploader.chipName)
+      setEspStub(esploader)
+      setUploads(await loadFiles(connectedChipName))
+      setChipName(connectedChipName)
     } catch (err) {
       // The browser port chooser was dismissed, so there is no connection to clean up
       const cancelled = err?.name === 'NotFoundError'
@@ -117,8 +115,7 @@ const App = () => {
 
       if (esploader) {
         try {
-          await esploader.port.close()
-          await esploader.disconnect()
+          await esploader.transport.disconnect()
         } catch (closeErr) {
           console.debug(closeErr)
         }
@@ -159,9 +156,14 @@ const App = () => {
   // Flash Firmware
   const program = async () => {
     setConfirmProgram(false)
-    setFlashing(true)
 
-    let success = false
+    const files = uploads.filter((file) => file.fileName && file.obj)
+
+    if (files.length === 0) {
+      addOutput(`Please add a .bin file`)
+      toast.info('Please add a .bin file', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
+      return
+    }
 
     const toArrayBuffer = (inputFile) => {
       const reader = new FileReader()
@@ -179,48 +181,49 @@ const App = () => {
       })
     }
 
-    for (const file of uploads) {
-      if (!file.fileName || !file.obj) continue
-      success = true
+    setFlashing(true)
+    toast(`Uploading ${files[0].fileName.substring(0, 28)}...`, { position: 'top-center', progress: 0, toastId: 'upload' })
 
-      toast(`Uploading ${file.fileName.substring(0, 28)}...`, { position: 'top-center', progress: 0, toastId: 'upload' })
+    try {
+      const fileArray = []
 
-      try {
+      for (const file of files) {
         const contents = await toArrayBuffer(file.obj)
 
-        await espStub.flashData(
-          contents,
-          (bytesWritten, totalBytes) => {
-            const progress = (bytesWritten / totalBytes)
-            const percentage = Math.floor(progress * 100)
-
-            toast.update('upload', { progress: progress })
-
-            addOutput(`Flashing... ${percentage}%`)
-          },
-          parseInt(file.offset, 16)
-        )
-
-        await sleep(100)
-      } catch (e) {
-        addOutput(`ERROR!`)
-        addOutput(`${e}`)
-        console.error(e)
+        fileArray.push({
+          data: new Uint8Array(contents),
+          address: parseInt(file.offset, 16),
+        })
       }
-    }
 
-    if (success) {
+      await espStub.writeFlash({
+        fileArray: fileArray,
+        flashMode: 'keep',
+        flashFreq: 'keep',
+        flashSize: 'keep',
+        eraseAll: false,
+        compress: true,
+        reportProgress: (fileIndex, written, total) => {
+          const progress = (written / total)
+
+          toast.update('upload', { progress: progress })
+
+          addOutput(`Flashing ${files[fileIndex].fileName.substring(0, 28)}... ${Math.floor(progress * 100)}%`)
+        },
+      })
+
       addOutput(`Done!`)
       addOutput(`To run the new firmware please reset your device.`)
 
       toast.success('Done! Reset ESP to run new firmware.', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
-    } else {
-      addOutput(`Please add a .bin file`)
-
-      toast.info('Please add a .bin file', { position: 'top-center', toastId: 'uploaded', autoClose: 3000 })
+    } catch (e) {
+      addOutput(`ERROR!`)
+      addOutput(`${e}`)
+      console.error(e)
+      toast.update('upload', { render: `ERROR! ${e}`, type: toast.TYPE.ERROR, autoClose: 5000 })
+    } finally {
+      setFlashing(false)
     }
-
-    setFlashing(false)
   }
 
   return (

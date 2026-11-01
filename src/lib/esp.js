@@ -1,19 +1,14 @@
 import localforage from "localforage"
 
-const connectESP = async t => {
-    const esploaderMod = await window.esptoolPackage;
-    const e = await navigator.serial.requestPort();
-    return t.log("Connecting..."), await e.open({
-        baudRate: t.baudRate
-    }), t.log("Connected successfully."), new esploaderMod.ESPLoader(e, t);
-};
+const connectESP = async ({ baudRate, terminal }) => {
+    const { ESPLoader, Transport } = await window.esptoolPackage
+    const port = await navigator.serial.requestPort()
 
-const formatMacAddr = (macAddr) => {
-    return macAddr.map((value) => value.toString(16).toUpperCase().padStart(2, '0')).join(':')
-}
-
-const sleep = (ms) => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new ESPLoader({
+        transport: new Transport(port),
+        baudrate: baudRate,
+        terminal: terminal,
+    })
 }
 
 const defaultFiles = (chipName) => {
@@ -52,4 +47,4 @@ const supported = () => {
     return ('serial' in navigator)
 }
 
-export { connectESP, formatMacAddr, sleep, defaultFiles, saveFiles, loadFiles, supported }
+export { connectESP, defaultFiles, saveFiles, loadFiles, supported }
