@@ -53,12 +53,7 @@ const App = () => {
       return
     }
 
-    const esploader = await connectESP({
-      log: (...args) => addOutput(`${args[0]}`),
-      debug: (...args) => console.debug(...args),
-      error: (...args) => console.error(...args),
-      baudRate: parseInt(settings.baudRate),
-    })
+    let esploader
 
     try {
       toast.info('Connecting...', { 
@@ -70,6 +65,13 @@ const App = () => {
         render: 'Connecting...',
         type: toast.TYPE.INFO,
         autoClose: false
+      })
+
+      esploader = await connectESP({
+        log: (...args) => addOutput(`${args[0]}`),
+        debug: (...args) => console.debug(...args),
+        error: (...args) => console.error(...args),
+        baudRate: parseInt(settings.baudRate),
       })
 
       setConnecting(true)
@@ -101,18 +103,26 @@ const App = () => {
       setUploads(await loadFiles(esploader.chipName))
       setChipName(esploader.chipName)
     } catch (err) {
-      const shortErrMsg = `${err}`.replace('Error: ','')
+      // The browser port chooser was dismissed, so there is no connection to clean up
+      const cancelled = err?.name === 'NotFoundError'
+      const shortErrMsg = cancelled ? 'No port selected' : `${err}`.replace('Error: ','')
 
       toast.update('connecting', {
         render: shortErrMsg,
-        type: toast.TYPE.ERROR,
+        type: cancelled ? toast.TYPE.INFO : toast.TYPE.ERROR,
         autoClose: 3000
       })
 
-      addOutput(`${err}`)
+      addOutput(shortErrMsg)
 
-      await esploader.port.close()
-      await esploader.disconnect()
+      if (esploader) {
+        try {
+          await esploader.port.close()
+          await esploader.disconnect()
+        } catch (closeErr) {
+          console.debug(closeErr)
+        }
+      }
     } finally {
       setConnecting(false)
     }
