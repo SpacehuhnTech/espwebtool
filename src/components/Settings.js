@@ -40,9 +40,7 @@ const Settings = (props) => {
             <DialogTitle>Settings</DialogTitle>
 
             <DialogContent>
-                <DialogContentText>
-                    Serial Connection
-                </DialogContentText>
+                <DialogContentText>Serial Connection</DialogContentText>
 
                 <FormControl variant='filled' fullWidth sx={{ mt: 1, minWidth: '10em' }}>
                     <InputLabel>Baud Rate {props.connected && '(Requires Reconnect)'}</InputLabel>
@@ -52,17 +50,25 @@ const Settings = (props) => {
                         label='baudrate'
                         disabled={props.connected}
                     >
-                        {baudrates.map(baud =>
-                            <MenuItem value={baud} key={baud}>{baud} baud</MenuItem>
-                        )}
+                        {baudrates.map((baud) => (
+                            <MenuItem value={baud} key={baud}>
+                                {baud} baud
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
             </DialogContent>
 
             <DialogActions>
-                <Button onClick={reset} color='error'>Reset</Button>
-                <Button onClick={cancel} color='secondary'>Cancel</Button>
-                <Button onClick={save} color='primary'>Save</Button>
+                <Button onClick={reset} color='error'>
+                    Reset
+                </Button>
+                <Button onClick={cancel} color='secondary'>
+                    Cancel
+                </Button>
+                <Button onClick={save} color='primary'>
+                    Save
+                </Button>
             </DialogActions>
         </Dialog>
     )

@@ -1,7 +1,7 @@
 function setCookie(cname, cvalue) {
     const days = 365
     const d = new Date()
-    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000))
+    d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000)
     const expires = d.toUTCString()
     document.cookie = `${cname}=${cvalue};expires=${expires};path=/;SameSite=Strict;`
 }
@@ -16,7 +16,7 @@ function getCookie(cname) {
             c = c.substring(1)
         }
         if (c.indexOf(name) === 0) {
-            return c.substring(name.length, c.length);
+            return c.substring(name.length, c.length)
         }
     }
     return ''

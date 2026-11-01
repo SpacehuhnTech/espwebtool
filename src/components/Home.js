@@ -14,39 +14,40 @@ import SettingsIcon from '@mui/icons-material/Settings'
 
 const Home = (props) => {
     return (
-        <Grid
-            container
-            spacing={0}
-            direction='column'
-            alignItems='center'
-            justifyContent='center'
-        >
+        <Grid container spacing={0} direction='column' alignItems='center' justifyContent='center'>
             <Grid item xs={3}>
-
-                {props.supported() ?
+                {props.supported() ? (
                     <Box align='center'>
                         <Box>
-                            <Button variant='contained' color='success' size='large' onClick={props.connect} sx={{ m: 1 }}>
+                            <Button
+                                variant='contained'
+                                color='success'
+                                size='large'
+                                onClick={props.connect}
+                                sx={{ m: 1 }}
+                            >
                                 Connect
                             </Button>
                         </Box>
 
                         <Box>
-                            <Button size='large' onClick={props.openSettings} sx={{ m: 1, color:'#bebebe' }}>
+                            <Button size='large' onClick={props.openSettings} sx={{ m: 1, color: '#bebebe' }}>
                                 <SettingsIcon />
                             </Button>
                         </Box>
 
                         <Alert severity='info' align='left'>
-                            1. Click on Connect<br />
-                            2. Plug in your ESP & select the port<br />
-                            3. Add your .bin & set the address<br />
-                            4. Click Program to flash it 😊<br />
+                            1. Click on Connect
+                            <br />
+                            2. Plug in your ESP & select the port
+                            <br />
+                            3. Add your .bin & set the address
+                            <br />
+                            4. Click Program to flash it 😊
+                            <br />
                         </Alert>
                     </Box>
-
-                    :
-
+                ) : (
                     <Alert severity='warning'>
                         <AlertTitle>Your browser doesn&apos;t support Web Serial 😭</AlertTitle>
                         Try using&nbsp;
@@ -66,13 +67,15 @@ const Home = (props) => {
                         <br />
                         <br />
                         Learn more about&nbsp;
-                        <a href='https://developer.mozilla.org/en-US/docs/Web/API/Serial#browser_compatibility' target='blank'>
+                        <a
+                            href='https://developer.mozilla.org/en-US/docs/Web/API/Serial#browser_compatibility'
+                            target='blank'
+                        >
                             browser compatibility
                         </a>
                     </Alert>
-                }
+                )}
             </Grid>
-
         </Grid>
     )
 }

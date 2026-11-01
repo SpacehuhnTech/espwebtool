@@ -14,7 +14,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import DeleteIcon from '@mui/icons-material/Delete'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import RestartAltIcon from '@mui/icons-material/RestartAlt'
 
 import styles from './FileList.module.css'
 
@@ -31,9 +31,12 @@ const FileList = (props) => {
     const [pendingLayout, setPendingLayout] = React.useState(null)
 
     const addFile = () => {
-        props.setUploads([...props.uploads, {
-            offset: 0
-        }])
+        props.setUploads([
+            ...props.uploads,
+            {
+                offset: 0,
+            },
+        ])
     }
 
     const applyLayout = (newLayout) => {
@@ -75,7 +78,7 @@ const FileList = (props) => {
         const newUploads = [...props.uploads]
         newUploads[index] = {
             ...props.uploads[index],
-            offset: newOffset
+            offset: newOffset,
         }
 
         saveFiles(newUploads)
@@ -107,7 +110,7 @@ const FileList = (props) => {
 
     return (
         <Box textAlign='center' className={styles.box}>
-            {props.uploads.map((file, i) =>
+            {props.uploads.map((file, i) => (
                 <Grid container spacing={0} className={styles.fileItem} key={i}>
                     {/* Offset */}
                     <Grid item xs={2} className={styles.fileOffset}>
@@ -123,40 +126,32 @@ const FileList = (props) => {
 
                     {/* File Name */}
                     <Grid item xs={9}>
-                        {file.fileName ?
-                            <Typography className={styles.fileName}>
-                                {file.fileName}
-                            </Typography>
-                            :
-                            <Button variant='outlined' color='primary' component='label' endIcon={<DriveFolderUploadIcon />}>
+                        {file.fileName ? (
+                            <Typography className={styles.fileName}>{file.fileName}</Typography>
+                        ) : (
+                            <Button
+                                variant='outlined'
+                                color='primary'
+                                component='label'
+                                endIcon={<DriveFolderUploadIcon />}
+                            >
                                 Select
-                                <input
-                                    type='file'
-                                    hidden
-                                    onChange={(e) => uploadFile(e, i)}
-                                />
+                                <input type='file' hidden onChange={(e) => uploadFile(e, i)} />
                             </Button>
-                        }
+                        )}
                     </Grid>
 
                     {/* Delete */}
                     <Grid item xs={1}>
-                        <IconButton
-                            color='error'
-                            onClick={() => deleteFile(i)}
-                        >
-                            {file.fileName ?
-                                <HighlightOffIcon />
-                                :
-                                <DeleteIcon />
-                            }
+                        <IconButton color='error' onClick={() => deleteFile(i)}>
+                            {file.fileName ? <HighlightOffIcon /> : <DeleteIcon />}
                         </IconButton>
                     </Grid>
                 </Grid>
-            )}
+            ))}
 
             {/* Reset, layout switch & Add File */}
-            <Grid container spacing={.5} alignItems='center'>
+            <Grid container spacing={0.5} alignItems='center'>
                 <Grid item xs={4} sx={{ textAlign: 'left' }}>
                     <Button color='error' component='label' size='large' onClick={reset} endIcon={<RestartAltIcon />}>
                         Reset

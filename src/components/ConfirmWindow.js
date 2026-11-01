@@ -18,8 +18,12 @@ const ConfirmWindow = (props) => {
             </DialogContent>
 
             <DialogActions>
-                <Button onClick={props.onCancel} color='secondary'>Cancel</Button>
-                <Button onClick={props.onOk} color='primary'>Continue</Button>
+                <Button onClick={props.onCancel} color='secondary'>
+                    Cancel
+                </Button>
+                <Button onClick={props.onOk} color='primary'>
+                    Continue
+                </Button>
             </DialogActions>
         </Dialog>
     )
@@ -29,7 +33,7 @@ ConfirmWindow.propTypes = {
     open: PropTypes.bool,
     text: PropTypes.string,
     onOk: PropTypes.func,
-    onCancel: PropTypes.func
+    onCancel: PropTypes.func,
 }
 
 export default ConfirmWindow

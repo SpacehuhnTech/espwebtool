@@ -8,23 +8,13 @@ const Buttons = (props) => {
     return (
         <Grid container spacing={1} direction='row' justifyContent='space-between' alignItems='flex-start'>
             <Grid item>
-                <Button
-                    variant='outlined'
-                    color='error'
-                    onClick={props.erase}
-                    disabled={props.disabled}
-                >
+                <Button variant='outlined' color='error' onClick={props.erase} disabled={props.disabled}>
                     Erase
                 </Button>
             </Grid>
 
             <Grid item>
-                <Button
-                    variant='contained'
-                    color='success'
-                    onClick={props.program}
-                    disabled={props.disabled}
-                >
+                <Button variant='contained' color='success' onClick={props.program} disabled={props.disabled}>
                     Program
                 </Button>
             </Grid>

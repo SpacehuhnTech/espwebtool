@@ -1,11 +1,7 @@
-
 import { setCookie, getCookie } from './cookie'
 
 const baudrates = [
-    115200,
-    230400,
-    460800,
-    921600,
+    115200, 230400, 460800, 921600,
     //3000000,
 ]
 
@@ -14,7 +10,7 @@ const defaultSettings = {
 }
 
 const loadSettings = () => {
-    let settings = {...defaultSettings}
+    let settings = { ...defaultSettings }
 
     const cookieValue = getCookie('settings')
 
