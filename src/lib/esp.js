@@ -49,4 +49,15 @@ const supported = () => {
     return 'serial' in navigator
 }
 
-export { connectESP, mergedFile, multipleFiles, saveFiles, loadFiles, supported }
+// Converts esptool-js flash size strings like "512KB" or "4MB" to bytes
+const flashSizeToBytes = (size) => {
+    const match = /^(\d+)(KB|MB)$/.exec(size)
+
+    if (!match) {
+        return undefined
+    }
+
+    return parseInt(match[1]) * (match[2] === 'MB' ? 1024 * 1024 : 1024)
+}
+
+export { connectESP, mergedFile, multipleFiles, saveFiles, loadFiles, supported, flashSizeToBytes }

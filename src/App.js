@@ -16,7 +16,7 @@ import Settings from './components/Settings'
 import ConfirmWindow from './components/ConfirmWindow'
 import Footer from './components/Footer'
 
-import { connectESP, loadFiles, supported } from './lib/esp'
+import { connectESP, loadFiles, supported, flashSizeToBytes } from './lib/esp'
 import { loadSettings, defaultSettings } from './lib/settings'
 
 const App = () => {
@@ -124,6 +124,46 @@ const App = () => {
             }
         } finally {
             setConnecting(false)
+        }
+    }
+
+    // Read the full flash into a .bin file
+    const backup = async () => {
+        setFlashing(true)
+        toast(`Reading flash memory. Please wait...`, { position: 'top-center', progress: 0, toastId: 'dump' })
+
+        try {
+            const stamp = Date.now()
+            const size = flashSizeToBytes(await espStub.detectFlashSize())
+
+            if (!size) {
+                throw new Error('Could not detect flash size')
+            }
+
+            addOutput(`Start reading ${size / 1024 / 1024}MB of flash`)
+
+            const data = await espStub.readFlash(0, size, (chunk, read, total) => {
+                const progress = read / total
+
+                toast.update('dump', { progress: progress })
+            })
+
+            const url = URL.createObjectURL(new Blob([data], { type: 'application/octet-stream' }))
+            const link = document.createElement('a')
+
+            link.href = url
+            link.download = `${chipName}-flash-${size / 1024 / 1024}MB.bin`
+            link.click()
+            URL.revokeObjectURL(url)
+
+            addOutput(`Finished. Took ${Date.now() - stamp}ms to read ${data.length} bytes.`)
+            toast.update('dump', { render: 'Backup saved.', type: toast.TYPE.SUCCESS, autoClose: 3000 })
+        } catch (e) {
+            addOutput(`ERROR!\n${e}`)
+            toast.update('dump', { render: `ERROR!\n${e}`, type: toast.TYPE.ERROR, autoClose: 5000 })
+            console.error(e)
+        } finally {
+            setFlashing(false)
         }
     }
 
@@ -278,6 +318,7 @@ const App = () => {
                     <Grid item>
                         <Buttons
                             disconnect={() => disconnect()}
+                            backup={backup}
                             erase={() => setConfirmErase(true)}
                             program={() => setConfirmProgram(true)}
                             disabled={flashing}
