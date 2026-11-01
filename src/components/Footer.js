@@ -28,7 +28,7 @@ const Footer = (props) => {
                     underline='hover'
                     color='inherit'
                 >
-                    {version.name}
+                    {`v${version.name} (${version.commit})`}
                 </Link>
             </Typography>
         </Box>

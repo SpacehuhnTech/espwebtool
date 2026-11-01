@@ -15,8 +15,9 @@ jobs:
 
       - name: Set Version
         run: |
-          echo ${GITHUB_SHA::8}
-          sed -i 's/dev/dev '"${GITHUB_SHA::8}"'/' src/version.js
+          VERSION=$(node -p "require('./package.json').version")
+          sed -i "s/name: '.*'/name: '$VERSION'/" src/version.js
+          sed -i "s/commit: 'dev'/commit: '${GITHUB_SHA::8}'/" src/version.js
           sed -i 's/localhost/esptool.spacehuhn.com/' src/version.js
           sed -i 's/localhost/esptool.spacehuhn.com/' package.json
       
