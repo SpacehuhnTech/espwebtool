@@ -98,7 +98,7 @@ const App = () => {
       })
 
       setEspStub(esploader)
-      setUploads(await loadFiles(connectedChipName))
+      setUploads(await loadFiles())
       setChipName(connectedChipName)
     } catch (err) {
       // The browser port chooser was dismissed, so there is no connection to clean up
