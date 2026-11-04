@@ -4,27 +4,102 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
+
+        <title>ESP Web Tool - Flash ESP32 &amp; ESP8266 from Your Browser</title>
         <meta
             name="description"
-            content="Flash your ESP32 or ESP8266 through your browser. Open-Source, free, and easy to use."
+            content="Flash ESP32 and ESP8266 firmware from your browser - no driver or app install needed. Free, open-source Web Serial flasher for .bin files."
         />
-        <meta
-            name="keywords"
-            content="Web Serial, ESPtool, Flasher, Spacehuhn, ESP8266, ESP32, ESP32-S2, ESP32-S3, ESP32-C3"
-        />
+        <link rel="canonical" href="https://esptool.spacehuhn.com/" />
         <meta name="author" content="Spacehuhn" />
+
+        <!-- Link previews (Open Graph / Twitter) -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ESP Web Tool" />
+        <meta property="og:url" content="https://esptool.spacehuhn.com/" />
+        <meta property="og:title" content="ESP Web Tool - Flash ESP32 &amp; ESP8266 from Your Browser" />
+        <meta
+            property="og:description"
+            content="Flash ESP32 and ESP8266 firmware from your browser - no driver or app install needed. Free, open-source Web Serial flasher for .bin files."
+        />
+        <meta property="og:image" content="https://esptool.spacehuhn.com/logo512.png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="ESP Web Tool - Flash ESP32 &amp; ESP8266 from Your Browser" />
+        <meta
+            name="twitter:description"
+            content="Flash ESP32 and ESP8266 firmware from your browser - no driver or app install needed. Free, open-source Web Serial flasher for .bin files."
+        />
+        <meta name="twitter:image" content="https://esptool.spacehuhn.com/logo512.png" />
+
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
         <link rel="icon" href="%PUBLIC_URL%/logo512.png" />
         <link rel="stylesheet" href="%PUBLIC_URL%/index.css" />
-        <title>ESPWebTool</title>
+
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                "name": "ESP Web Tool",
+                "alternateName": "ESPWebTool",
+                "url": "https://esptool.spacehuhn.com/",
+                "description": "Flash ESP32 and ESP8266 firmware from your browser - no driver or app install needed. Free, open-source Web Serial flasher for .bin files.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "browserRequirements": "Requires a browser with Web Serial support, such as Chrome, Edge or Opera",
+                "isAccessibleForFree": true,
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                },
+                "author": {
+                    "@type": "Organization",
+                    "name": "Spacehuhn Technologies",
+                    "url": "https://spacehuhn.com"
+                },
+                "license": "https://github.com/spacehuhntech/espwebtool/blob/main/LICENSE"
+            }
+        </script>
 
         <script type="module">
             window.esptoolPackage = import('https://unpkg.com/esptool-js@0.7.1/bundle.js')
         </script>
+
+        <style>
+            .seo-about {
+                background: #f5f5f5;
+                border-top: 1px solid #e0e0e0;
+                color: #333;
+                font-family: Roboto, Helvetica, Arial, sans-serif;
+                line-height: 1.6;
+                padding: 2.5rem 1.5rem;
+            }
+            .seo-about > div {
+                margin: 0 auto;
+                max-width: 48rem;
+            }
+            .seo-about h2 {
+                font-size: 1.4rem;
+                margin: 0 0 0.75rem;
+            }
+            .seo-about h3 {
+                font-size: 1.1rem;
+                margin: 1.75rem 0 0.5rem;
+            }
+            .seo-about p,
+            .seo-about li {
+                font-size: 0.95rem;
+            }
+            .seo-about a {
+                color: #0276aa;
+            }
+        </style>
     </head>
 
     <body>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <noscript>
+            ESP Web Tool flashes ESP32 and ESP8266 firmware from your browser. You need to enable JavaScript to use it.
+        </noscript>
         <div id="root"></div>
         <!--
       This HTML file is a template.
@@ -36,6 +111,56 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+
+        <section class="seo-about">
+            <div>
+                <h2>Flash ESP32 and ESP8266 firmware from your browser</h2>
+                <p>
+                    ESP Web Tool (ESPWebTool) writes <code>.bin</code> firmware straight to your ESP board over Web
+                    Serial. There is nothing to install: no USB drivers, no Arduino IDE, no Python or
+                    <code>esptool.py</code> setup. Open the page, plug in your board, pick your firmware and hit
+                    Program. It runs entirely in your browser, so your firmware files are never uploaded to a server.
+                </p>
+
+                <h3>Supported chips</h3>
+                <p>
+                    ESP8266, ESP32, ESP32-S2, ESP32-S3, ESP32-C2, ESP32-C3, ESP32-C5, ESP32-C6, ESP32-H2 and ESP32-P4.
+                    The chip is detected automatically when you connect.
+                </p>
+
+                <h3>How to flash an ESP board</h3>
+                <ol>
+                    <li>Click <strong>Connect</strong> and allow serial access.</li>
+                    <li>Plug in your ESP over USB and select its port.</li>
+                    <li>Add your <code>.bin</code> file and set its flash address.</li>
+                    <li>Click <strong>Program</strong> to write the firmware, then watch the serial output.</li>
+                </ol>
+                <p>
+                    A single merged firmware image goes to address <code>0x0</code>. Separate ESP-IDF build outputs use
+                    <code>0x1000</code> for the ESP32 bootloader and <code>0x0</code> on newer chips, with the partition
+                    table at <code>0x8000</code> and the app at <code>0x10000</code>. You can also erase the whole flash
+                    before programming, or back up the existing firmware first.
+                </p>
+
+                <h3>Browser requirements</h3>
+                <p>
+                    Flashing uses the
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Serial" rel="noopener">Web Serial API</a>,
+                    which needs a desktop version of Chrome, Edge or Opera. Safari, Firefox and mobile browsers on iOS
+                    and Android cannot access serial ports, so they are not supported.
+                </p>
+
+                <h3>Open source</h3>
+                <p>
+                    ESP Web Tool is free and MIT licensed. The
+                    <a href="https://github.com/spacehuhntech/espwebtool" rel="noopener">source code is on GitHub</a>,
+                    flashing is handled by
+                    <a href="https://github.com/espressif/esptool-js" rel="noopener">esptool-js</a> from Espressif, and
+                    there is a <a href="https://docs.spacehuhn.com/blog/espcomm/" rel="noopener">help guide</a> if a
+                    board refuses to connect.
+                </p>
+            </div>
+        </section>
 
         <script defer data-domain="esptool.spacehuhn.com" src="https://plausible.io/js/plausible.js"></script>
     </body>

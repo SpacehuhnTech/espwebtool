@@ -1,5 +1,6 @@
 /* bungee-regular - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Bungee';
     font-style: normal;
     font-weight: 400;
@@ -15,6 +16,7 @@
 
 /* roboto-mono-200 - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 200;
@@ -31,6 +33,7 @@
 
 /* roboto-mono-regular - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 400;
@@ -48,6 +51,7 @@
 
 /* roboto-mono-600 - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 600;
@@ -64,6 +68,7 @@
 
 /* roboto-mono-200italic - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 200;
@@ -82,6 +87,7 @@
 
 /* roboto-mono-300italic - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 300;
@@ -100,6 +106,7 @@
 
 /* roboto-mono-600italic - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 600;
@@ -118,6 +125,7 @@
 
 /* roboto-300 - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 300;
@@ -133,6 +141,7 @@
 
 /* roboto-300italic - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto';
     font-style: italic;
     font-weight: 300;
@@ -148,6 +157,7 @@
 
 /* roboto-italic - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto';
     font-style: italic;
     font-weight: 400;
@@ -163,6 +173,7 @@
 
 /* roboto-regular - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
@@ -178,6 +189,7 @@
 
 /* roboto-700italic - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto';
     font-style: italic;
     font-weight: 700;
@@ -193,6 +205,7 @@
 
 /* roboto-700 - latin */
 @font-face {
+    font-display: swap;
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 700;
