@@ -31,7 +31,12 @@ const Home = (props) => {
                         </Box>
 
                         <Box>
-                            <Button size='large' onClick={props.openSettings} sx={{ m: 1, color: '#bebebe' }}>
+                            <Button
+                                aria-label='Settings'
+                                size='large'
+                                onClick={props.openSettings}
+                                sx={{ m: 1, color: '#8a8a8a' }}
+                            >
                                 <SettingsIcon />
                             </Button>
                         </Box>
@@ -51,15 +56,15 @@ const Home = (props) => {
                     <Alert severity='warning'>
                         <AlertTitle>Your browser doesn&apos;t support Web Serial 😭</AlertTitle>
                         Try using&nbsp;
-                        <a href='https://www.google.com/chrome/' target='blank'>
+                        <a href='https://www.google.com/chrome/' target='_blank' rel='noopener noreferrer'>
                             <ChromeIcon fontSize='inherit' /> <b>Chrome</b>
                         </a>
                         ,&nbsp;
-                        <a href='https://www.microsoft.com/en-us/edge' target='blank'>
+                        <a href='https://www.microsoft.com/en-us/edge' target='_blank' rel='noopener noreferrer'>
                             <EdgeIcon fontSize='inherit' /> <b>Edge</b>
                         </a>
                         , or&nbsp;
-                        <a href='https://www.opera.com/' target='blank'>
+                        <a href='https://www.opera.com/' target='_blank' rel='noopener noreferrer'>
                             <OperaIcon fontSize='inherit' /> <b>Opera</b>
                         </a>
                         <br />
@@ -69,7 +74,8 @@ const Home = (props) => {
                         Learn more about&nbsp;
                         <a
                             href='https://developer.mozilla.org/en-US/docs/Web/API/Serial#browser_compatibility'
-                            target='blank'
+                            target='_blank'
+                            rel='noopener noreferrer'
                         >
                             browser compatibility
                         </a>

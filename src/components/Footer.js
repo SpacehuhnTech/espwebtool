@@ -21,7 +21,7 @@ const Footer = (props) => {
             </Box>
 
             {/* Version */}
-            <Typography variant='caption' align='center' display='block' sx={{ color: '#ddd' }}>
+            <Typography variant='caption' align='center' display='block' sx={{ color: 'text.secondary' }}>
                 <Link
                     href='https://github.com/spacehuhntech/espwebtool'
                     target='_blank'

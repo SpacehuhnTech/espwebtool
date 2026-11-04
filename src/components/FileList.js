@@ -143,7 +143,11 @@ const FileList = (props) => {
 
                     {/* Delete */}
                     <Grid item xs={1}>
-                        <IconButton color='error' onClick={() => deleteFile(i)}>
+                        <IconButton
+                            aria-label={file.fileName ? `Remove ${file.fileName}` : 'Delete row'}
+                            color='error'
+                            onClick={() => deleteFile(i)}
+                        >
                             {file.fileName ? <HighlightOffIcon /> : <DeleteIcon />}
                         </IconButton>
                     </Grid>

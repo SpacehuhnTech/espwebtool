@@ -66,6 +66,13 @@
         </script>
 
         <style>
+            /* Reserve the app's height so the section below starts off-screen on
+               the first paint, before React mounts. Without this, the empty #root
+               is 0px tall and the section gets pushed a full viewport down on
+               hydration, which counts as a large layout shift (CLS). */
+            #root {
+                min-height: 100vh;
+            }
             .seo-about {
                 background: #f5f5f5;
                 border-top: 1px solid #e0e0e0;
@@ -91,7 +98,7 @@
                 font-size: 0.95rem;
             }
             .seo-about a {
-                color: #0276aa;
+                color: #01699a;
             }
         </style>
     </head>
